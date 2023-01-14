@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+	<head>
+		{{ if .isLogined }}
+		{{else}}
+		<link rel="stylesheet" href="../static/css/style.css">
+		{{end}}
+	</head>
+<body>
+	<h1>
+		{{ if .isLogined }}
+		Email : {{ .id }}
+		{{else}}
+		<button id="googleLoginButton"> 구글 로그인 </button>
+		{{end}}
+	</h1>
+</body>
+</html>
+
+
+<script type="text/javascript">
+	googleLoginButton = document.getElementById("googleLoginButton")
+	
+	googleLoginButton !== null ? addEventListener("click", () => {
+		window.location = "/auth/google/login"
+	}) : null
+</script>
