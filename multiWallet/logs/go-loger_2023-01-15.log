@@ -1,0 +1,25 @@
+{"level":"DEBUG","time":"2023-01-15T22:45:20.456+0900","caller":"logger/logger.go:52","msg":"debug","-":"ready server.... "}
+{"level":"INFO","time":"2023-01-15T22:45:20.459+0900","caller":"logger/logger.go:62","msg":"info","-":"start server "}
+{"level":"INFO","time":"2023-01-15T22:45:49.295+0900","caller":"logger/logger.go:115","msg":"/","status":200,"method":"GET","path":"/","query":"","ip":"::1","user-agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36","errors":"","cost":0.000266749}
+{"level":"INFO","time":"2023-01-15T22:45:56.454+0900","caller":"logger/logger.go:115","msg":"/auth/google/callback","status":200,"method":"GET","path":"/auth/google/callback","query":"state=1L_zshy0_Yy3lOhX3Sa_Jw%3D%3D&code=4%2F0AWgavdcrCAWqfWJaItu-mD8KsambJ0CSfFiKwc5V6eQbVga3P22NhsZFirq4z0J0BrxiXQ&scope=email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+openid&authuser=0&prompt=consent","ip":"::1","user-agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36","errors":"","cost":0.501671502}
+{"level":"INFO","time":"2023-01-15T22:47:43.404+0900","caller":"logger/logger.go:115","msg":"/wallet/mnemonics","status":200,"method":"POST","path":"/wallet/mnemonics","query":"","ip":"::1","user-agent":"PostmanRuntime/7.30.0","errors":"","cost":0.000161358}
+{"level":"INFO","time":"2023-01-15T22:48:07.690+0900","caller":"logger/logger.go:115","msg":"/wallet/createWallet","status":200,"method":"POST","path":"/wallet/createWallet","query":"","ip":"::1","user-agent":"PostmanRuntime/7.30.0","errors":"","cost":0.043918276}
+{"level":"INFO","time":"2023-01-15T22:48:35.031+0900","caller":"logger/logger.go:115","msg":"/wallet/keystores","status":200,"method":"POST","path":"/wallet/keystores","query":"","ip":"::1","user-agent":"PostmanRuntime/7.30.0","errors":"","cost":1.38796906}
+{"level":"WARN","time":"2023-01-15T22:48:39.735+0900","caller":"logger/logger.go:72","msg":"warn","-":"Shutdown Server ... "}
+{"level":"INFO","time":"2023-01-15T22:48:40.736+0900","caller":"logger/logger.go:62","msg":"info","-":"timeout of 1 seconds. "}
+{"level":"INFO","time":"2023-01-15T22:48:40.736+0900","caller":"logger/logger.go:62","msg":"info","-":"Server exiting "}
+{"level":"DEBUG","time":"2023-01-15T23:18:30.022+0900","caller":"logger/logger.go:52","msg":"debug","-":"ready server.... "}
+{"level":"INFO","time":"2023-01-15T23:18:30.025+0900","caller":"logger/logger.go:62","msg":"info","-":"start server "}
+{"level":"WARN","time":"2023-01-15T23:23:24.895+0900","caller":"logger/logger.go:72","msg":"warn","-":"Shutdown Server ... "}
+{"level":"INFO","time":"2023-01-15T23:23:25.915+0900","caller":"logger/logger.go:62","msg":"info","-":"timeout of 1 seconds. "}
+{"level":"INFO","time":"2023-01-15T23:23:25.915+0900","caller":"logger/logger.go:62","msg":"info","-":"Server exiting "}
+{"level":"DEBUG","time":"2023-01-15T23:48:05.413+0900","caller":"logger/logger.go:52","msg":"debug","-":"ready server.... "}
+{"level":"INFO","time":"2023-01-15T23:48:05.416+0900","caller":"logger/logger.go:62","msg":"info","-":"start server "}
+{"level":"WARN","time":"2023-01-15T23:50:19.309+0900","caller":"logger/logger.go:72","msg":"warn","-":"Shutdown Server ... "}
+{"level":"INFO","time":"2023-01-15T23:50:20.309+0900","caller":"logger/logger.go:62","msg":"info","-":"timeout of 1 seconds. "}
+{"level":"INFO","time":"2023-01-15T23:50:20.309+0900","caller":"logger/logger.go:62","msg":"info","-":"Server exiting "}
+{"level":"DEBUG","time":"2023-01-15T23:55:12.143+0900","caller":"logger/logger.go:52","msg":"debug","-":"ready server.... "}
+{"level":"INFO","time":"2023-01-15T23:55:12.146+0900","caller":"logger/logger.go:62","msg":"info","-":"start server "}
+{"level":"WARN","time":"2023-01-15T23:55:13.571+0900","caller":"logger/logger.go:72","msg":"warn","-":"Shutdown Server ... "}
+{"level":"INFO","time":"2023-01-15T23:55:14.571+0900","caller":"logger/logger.go:62","msg":"info","-":"timeout of 1 seconds. "}
+{"level":"INFO","time":"2023-01-15T23:55:14.571+0900","caller":"logger/logger.go:62","msg":"info","-":"Server exiting "}

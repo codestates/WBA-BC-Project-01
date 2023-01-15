@@ -1,0 +1,18 @@
+[wemix]
+url = "wss://ws.test.wemix.com"
+
+[klaytn]
+url = "wss://public-node-api.klaytnapi.com/v1/baobab/ws"
+
+[log]
+level = "debug" # debug or info
+fpath = "./logs/go-loger" # 로그가 생성될 경로 : ./logs, 로그파일명 go-loger_xxx.log
+msize = 2000    # 2g : megabytes
+mage = 7        # 7days
+mbackup = 5    # number of log files
+
+[db]
+host = "mongodb://localhost:27017"
+
+[contractAddress]
+ca = "0x8Ce16893358C0D070DC7e94b1aA6E084F553Ae66"
