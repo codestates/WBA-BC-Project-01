@@ -5,10 +5,10 @@ import (
 	"flag"
 	"log"
 
-	conf "WBA/daemon/config"
-	logger "WBA/daemon/logger"
-	"WBA/daemon/models"
-	"WBA/daemon/utils"
+	conf "WBA/wemixDaemon/config"
+	logger "WBA/wemixDaemon/logger"
+	"WBA/wemixDaemon/models"
+	"WBA/wemixDaemon/utils"
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
@@ -25,7 +25,6 @@ var (
 var ()
 
 func init() {
-
 	var configFlag = flag.String("config", "./config/config.toml", "toml file to use for configuration")
 	flag.Parse()
 	cf = conf.NewConfig(*configFlag)
@@ -102,7 +101,6 @@ func main() {
 					log.Fatal(err)
 				}
 			}
-
 		}
 	}
 

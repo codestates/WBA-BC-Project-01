@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	conf "WBA/daemon/config"
+	conf "WBA/ethDaemon/config"
 
 	"github.com/natefinch/lumberjack"
 	"go.uber.org/zap"
