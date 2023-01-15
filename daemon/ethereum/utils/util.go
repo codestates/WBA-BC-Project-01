@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"WBA/daemon/models"
+	"WBA/ethDaemon/models"
 	"encoding/json"
 
 	"github.com/ethereum/go-ethereum/common"
