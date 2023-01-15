@@ -1,0 +1,21 @@
+[log]
+level = "debug" # debug or info
+fpath = "./logs/go-loger" # 로그가 생성될 경로 : ./logs, 로그파일명 go-loger_xxx.log
+msize = 2000    # 2g : megabytes
+mage = 7        # 7days
+mbackup = 5    # number of log files
+
+[server] ##nomal type
+mode = "dev"
+port = ":8080"
+
+[db] #data access object
+host = "mongodb://localhost:27017"
+
+[oauth2] # SNS 로그인 설정 정보 
+[oauth2.google] #이중 map type map[string]map[string]interface{}
+redirecturl = "http://localhost:8080/auth/google/callback"
+clientid = "903884277980-mbb69s2t5e90f00d73qcut76vsp8pfcd.apps.googleusercontent.com"
+clientsecret = "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"
+scopes = "https://www.googleapis.com/auth/userinfo.email"
+oauthgoogleurlapi = "https://www.googleapis.com/oauth2/v2/userinfo?access_token="

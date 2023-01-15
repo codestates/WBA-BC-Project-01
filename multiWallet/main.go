@@ -37,6 +37,7 @@ var (
 	cc controllers.Controller
 	lc controllers.LoginController
 	uc controllers.UserController
+	wc controllers.WalletController
 )
 
 func init() {
@@ -59,7 +60,9 @@ func init() {
 		panic(err)
 	} else if cc, err = controllers.NewController(); err != nil {
 		panic(err)
-	} else if rt, err = route.NewRouter(&cc, &lc); err != nil {
+	} else if wc, err = controllers.NewWalletController(cf); err != nil {
+		panic(err)
+	} else if rt, err = route.NewRouter(&cc, &lc, &wc); err != nil {
 		panic(fmt.Errorf("router.NewRouter > %v", err))
 	}
 
