@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"WBA/config"
+	"WBA/services"
 	"context"
 	"crypto/rand"
 	"encoding/base64"
@@ -13,13 +14,22 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
+	"golang.org/x/sync/errgroup"
 )
 
 var (
 	googleOauthConfig *oauth2.Config
 	oauthGoogleUrlAPI string
+	server            *gin.Engine
+	us                services.UserService
+	userc             *mongo.Collection
+	mongoClient       *mongo.Client
+	err               error
+	g                 errgroup.Group
+	cf                *config.Config
 )
 
 type LoginController struct {

@@ -22,6 +22,7 @@ type Config struct {
 		Host string
 	}
 	Oauth2 map[string]map[string]interface{}
+	Wallet map[string]map[string]interface{}
 }
 
 func NewConfig(fpath string) *Config {

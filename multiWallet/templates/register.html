@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+	<head>
+		{{ if .isLogined }}
+		{{else}}
+		<link rel="stylesheet" href="../static/css/style.css">
+		{{end}}
+	</head>
+<body>
+	<h1>
+		{{ if .isLogined }}
+		Email : {{ .id }}
+		{{else}}
+		<button id="register"> 회원가입 </button>
+		{{end}}
+	</h1>
+</body>
+</html>
+
+
+<script type="text/javascript">
+	registerButton = document.getElementById("register")
+	
+	registerButton !== null ? addEventListener("click", () => {
+		window.location = "/wallet/mnemonics"
+	}) : null
+</script>
