@@ -1,9 +1,8 @@
 package services
 
 import (
-	"context"
-
 	"WBA/models"
+	"context"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -14,21 +13,19 @@ type UserServiceImplement struct {
 	ctx            context.Context
 }
 
-func NewUserService(usercollection *mongo.Collection, ctx context.Context) UserService {
+func NewUserService(usercollection *mongo.Collection, ctx context.Context) (UserService, error) {
 	return &UserServiceImplement{
 		usercollection: usercollection,
 		ctx:            ctx,
-	}
+	}, nil
 }
 
-func (u *UserServiceImplement) CreateUser(user *models.User) error {
-	_, err := u.usercollection.InsertOne(u.ctx, user)
-	return err
-}
-
-func (u *UserServiceImplement) GetUser(id string) (*models.User, error) {
+func (u *UserServiceImplement) CheckUser(email string) (*models.User, error) {
 	var user *models.User
-	query := bson.D{bson.E{Key: "id", Value: id}}
-	err := u.usercollection.FindOne(u.ctx, query).Decode(&user)
-	return user, err
+	filter := bson.M{"email": email}
+	if err := u.usercollection.FindOne(u.ctx, filter).Decode(&user); err != nil {
+		return nil, err
+	}
+
+	return user, nil
 }
