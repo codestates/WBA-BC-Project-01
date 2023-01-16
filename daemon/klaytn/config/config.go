@@ -7,9 +7,6 @@ import (
 )
 
 type Config struct {
-	Wemix struct {
-		Url string
-	}
 	Klaytn struct {
 		Url           string
 		Endpoint      string
@@ -29,7 +26,9 @@ type Config struct {
 		Ca string
 	}
 	DB struct {
-		Host string
+		Host       string
+		Database   string
+		Collection string
 	}
 }
 

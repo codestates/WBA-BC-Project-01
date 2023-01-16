@@ -31,7 +31,7 @@ func init() {
 	logger.InitLogger(cf)
 
 	/* model 초기화 */
-	md, err = models.NewModel(cf.DB.Host)
+	md, err = models.NewModel(cf)
 	if err != nil {
 		log.Fatal(err)
 	}
