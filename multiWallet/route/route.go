@@ -13,12 +13,13 @@ import (
 
 type Router struct {
 	cc *controllers.Controller
-	lc *controllers.LoginController
+	lc *controllers.GoogleLoginController
+	wc *controllers.WalletController
 }
 
 /* 주문자, 피주문자 컨트롤러 할당 */
-func NewRouter(ctl *controllers.Controller, loginCtl *controllers.LoginController) (*Router, error) {
-	r := &Router{cc: ctl, lc: loginCtl}
+func NewRouter(ctl *controllers.Controller, loginCtl *controllers.GoogleLoginController, walletCtl *controllers.WalletController) (*Router, error) {
+	r := &Router{cc: ctl, lc: loginCtl, wc: walletCtl}
 
 	return r, nil
 }
@@ -86,6 +87,14 @@ func (p *Router) Idx() *gin.Engine {
 	{
 		login.GET("/google/login", p.lc.GoogleLoginHandler)
 		login.GET("/google/callback", p.lc.GoogleAuthCallback)
+	}
+
+	/* 지갑 라우팅 */
+	wallet := e.Group("/wallet", liteAuth())
+	{
+		wallet.POST("/mnemonics", p.wc.NewMnemonic)
+		wallet.POST("/", p.wc.NewWallet)
+		// wallet.POST("/keystores", p.wc.NewWalletWithKeystore)
 	}
 
 	return e

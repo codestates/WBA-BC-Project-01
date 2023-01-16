@@ -35,8 +35,9 @@ var (
 // 컨트롤러
 var (
 	cc controllers.Controller
-	lc controllers.LoginController
+	lc controllers.GoogleLoginController
 	uc controllers.UserController
+	wc controllers.WalletController
 )
 
 func init() {
@@ -54,12 +55,19 @@ func init() {
 	/* MongoDB Connection */
 	if mongoClient, err = models.NewModel(cf.DB.Host); err != nil {
 		panic(err)
-		/* Router 초기화 */
-	} else if lc, err = controllers.NewGoogleLoginController(cf); err != nil {
+	} else if userc = mongoClient.Database(cf.DB.Database).Collection("member"); err != nil {
+		panic(err)
+		/* 유저 서비스 초기화 */
+	} else if us, err = services.NewUserService(userc, context.TODO()); err != nil {
+		panic(err)
+		/* 컨트롤러 초기화 */
+	} else if lc, err = controllers.NewGoogleLoginController(us, cf); err != nil {
 		panic(err)
 	} else if cc, err = controllers.NewController(); err != nil {
 		panic(err)
-	} else if rt, err = route.NewRouter(&cc, &lc); err != nil {
+	} else if wc, err = controllers.NewWalletController(cf); err != nil {
+		panic(err)
+	} else if rt, err = route.NewRouter(&cc, &lc, &wc); err != nil {
 		panic(fmt.Errorf("router.NewRouter > %v", err))
 	}
 
