@@ -7,7 +7,7 @@ type User struct {
 	Email    string             `json:"email" bson:"email"`                                //SNS ID
 	NickName string             `json:"nickname" bson:"age"`                               //별명
 	Address  string             `json:"address" bson:"address"`                            //지갑주소
-	SnsType  SNS_Type           `json:"snstype" bson:"snstype"`
+	SnsType  SNS_Type           `json:"snstype" bson:"snstype"`                            //SNS 타입
 }
 
 type SNS_Type int
