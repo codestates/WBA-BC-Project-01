@@ -1,6 +1,7 @@
 package models
 
 import (
+	conf "WBA/wemixDaemon/config"
 	"context"
 	"fmt"
 	"log"
@@ -14,17 +15,17 @@ type Model struct {
 	colBlock *mongo.Collection
 }
 
-func NewModel(mgUrl string) (*Model, error) {
+func NewModel(cfg *conf.Config) (*Model, error) {
 	r := &Model{}
 
 	var err error
-	if r.client, err = mongo.Connect(context.Background(), options.Client().ApplyURI(mgUrl)); err != nil {
+	if r.client, err = mongo.Connect(context.Background(), options.Client().ApplyURI(cfg.DB.Host)); err != nil {
 		return nil, err
 	} else if err := r.client.Ping(context.Background(), nil); err != nil {
 		return nil, err
 	} else {
-		db := r.client.Database("daemon")
-		r.colBlock = db.Collection("block")
+		db := r.client.Database(cfg.DB.Database)
+		r.colBlock = db.Collection(cfg.DB.Collection)
 	}
 	return r, nil
 }
@@ -64,5 +65,5 @@ type Transaction struct {
 var Address []string
 
 func init() {
-	Address = append(Address, "0x0924Dfa9cA977e6A956f0399F959c495E54152cb", "0x3764D8e80BB0CbfAA9B4bB6973EdeE0494d2D1eb")
+	Address = append(Address, "0x314613c08Cb38e3d782688e86f61a563D8959574", "0x3764D8e80BB0CbfAA9B4bB6973EdeE0494d2D1eb")
 }

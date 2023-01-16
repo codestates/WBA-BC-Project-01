@@ -21,7 +21,9 @@ type Config struct {
 		Ca string
 	}
 	DB struct {
-		Host string
+		Host       string
+		Database   string
+		Collection string
 	}
 }
 
