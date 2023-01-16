@@ -86,7 +86,7 @@ func GetTransactionsFromBlock(txs types.Transactions, b *models.Block, block *ty
 
 			/* 특정 주소에서 발생한 트랜잭션만 감지 */
 			for _, ads := range models.Address {
-				if msg.From().Hex() == ads { //ads = adress(s)
+				if msg.From().Hex() == ads || tx.To().Hex() == ads { //ads = adress(s)
 					// 트랜잭션 구조체 생성
 					t := models.Transaction{
 						TxHash:      tx.Hash().Hex(),
