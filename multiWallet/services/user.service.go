@@ -5,6 +5,5 @@ import (
 )
 
 type UserService interface {
-	CreateUser(*models.User) error
-	GetUser(string) (*models.User, error)
+	CheckUser(string) (*models.User, error)
 }

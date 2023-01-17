@@ -14,28 +14,20 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/mongo"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
-	"golang.org/x/sync/errgroup"
 )
 
 var (
 	googleOauthConfig *oauth2.Config
 	oauthGoogleUrlAPI string
-	server            *gin.Engine
-	us                services.UserService
-	userc             *mongo.Collection
-	mongoClient       *mongo.Client
-	err               error
-	g                 errgroup.Group
-	cf                *config.Config
 )
 
-type LoginController struct {
+type GoogleLoginController struct {
+	UserService services.UserService
 }
 
-func NewGoogleLoginController(config *config.Config) (LoginController, error) {
+func NewGoogleLoginController(us services.UserService, config *config.Config) (GoogleLoginController, error) {
 	googleOauthConfig = &oauth2.Config{
 		RedirectURL:  config.Oauth2["google"]["redirecturl"].(string),
 		ClientID:     config.Oauth2["google"]["clientid"].(string),
@@ -44,17 +36,17 @@ func NewGoogleLoginController(config *config.Config) (LoginController, error) {
 		Endpoint:     google.Endpoint,
 	}
 	oauthGoogleUrlAPI = config.Oauth2["google"]["oauthgoogleurlapi"].(string)
-	return LoginController{}, nil
+	return GoogleLoginController{UserService: us}, nil
 }
 
-func (lc *LoginController) GoogleLoginHandler(ctx *gin.Context) {
+func (lc *GoogleLoginController) GoogleLoginHandler(ctx *gin.Context) {
 	state := lc.generateStateOauthCookie(ctx.Writer)
 	url := googleOauthConfig.AuthCodeURL(state)
 	ctx.Redirect(http.StatusMovedPermanently, url)
 }
 
 // cookie 에 일회용 비번을 저장해서 검증
-func (lc *LoginController) generateStateOauthCookie(w http.ResponseWriter) string {
+func (lc *GoogleLoginController) generateStateOauthCookie(w http.ResponseWriter) string {
 	expiration := time.Now().Add(1 * 24 * time.Hour)
 
 	b := make([]byte, 16)
@@ -65,7 +57,7 @@ func (lc *LoginController) generateStateOauthCookie(w http.ResponseWriter) strin
 	return state
 }
 
-func (lc *LoginController) GoogleAuthCallback(ctx *gin.Context) {
+func (lc *GoogleLoginController) GoogleAuthCallback(ctx *gin.Context) {
 	oauthstate, _ := ctx.Cookie("oauthstate")
 
 	// 쿠키값과 폼데이터의 state 가 같은지 비교
@@ -81,11 +73,18 @@ func (lc *LoginController) GoogleAuthCallback(ctx *gin.Context) {
 		ctx.Redirect(400, "/")
 		return
 	}
+	// 기존 사용자인지 , 회원가입(지갑생성) 이 필요한 사용자인지 검사
+	_, err = lc.UserService.CheckUser(email)
+	if err != nil {
+		//회원가입이 필요한 사용자
+		ctx.HTML(http.StatusOK, "register.html", gin.H{"email": email})
+		return
+	}
 
 	ctx.HTML(http.StatusOK, "index.html", gin.H{"isLogined": true, "id": email})
 }
 
-func (lc *LoginController) getGoogleUserInfo(code string, ctx *gin.Context) (string, error) {
+func (lc *GoogleLoginController) getGoogleUserInfo(code string, ctx *gin.Context) (string, error) {
 	token, err := googleOauthConfig.Exchange(context.Background(), code)
 	if err != nil {
 		return "", fmt.Errorf("failed to exchange %s", err.Error())

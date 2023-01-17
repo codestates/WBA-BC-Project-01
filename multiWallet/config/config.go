@@ -19,7 +19,8 @@ type Config struct {
 		Mbackup int
 	}
 	DB struct {
-		Host string
+		Host     string
+		Database string
 	}
 	Oauth2 map[string]map[string]interface{}
 	Wallet map[string]map[string]interface{}

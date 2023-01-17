@@ -14,6 +14,8 @@ type MnemonicResponse struct {
 
 type WalletCreateRequest struct {
 	Mnemonic string `json:"mnemonic" binding:"required"`
+	Password string `json:"password" binding:"required"`
+	Email    string `json:"emial" binding:"required"`
 }
 
 type WalletResponse struct {
@@ -28,7 +30,8 @@ type Key struct {
 }
 
 type Keystores struct {
-	Key string `json:"key"`
+	Email string `json:"email" bson:"email"`
+	Key   string `json:"key" bson:"key"`
 }
 
 type WalletCreateRequestWithPassword struct {
