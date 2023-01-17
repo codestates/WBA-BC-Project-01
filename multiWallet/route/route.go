@@ -94,6 +94,7 @@ func (p *Router) Idx() *gin.Engine {
 	{
 		wallet.POST("/mnemonics", p.wc.NewMnemonic)
 		wallet.POST("/", p.wc.NewWallet)
+		wallet.GET("/balance", p.wc.BalanceTokens)
 		// wallet.POST("/keystores", p.wc.NewWalletWithKeystore)
 	}
 

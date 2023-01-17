@@ -32,6 +32,7 @@ var (
 	g           errgroup.Group
 	cf          *config.Config
 	rt          *route.Router
+	mod         *models.Model
 )
 
 // 컨트롤러
@@ -55,28 +56,29 @@ func init() {
 	logger.Debug("ready server....")
 
 	/* MongoDB Connection */
-	if mongoClient, err = models.NewModel(cf.DB.Host); err != nil {
+	if mod, err = models.NewModel(cf); err != nil {
 		panic(err)
-	} else if userc = mongoClient.Database(cf.DB.Database).Collection("member"); err != nil {
+	} else if userc = mod.Client.Database(cf.DB.Database).Collection("member"); err != nil {
 		panic(err)
 		/* 서비스 초기화 */
-	} else if walletc = mongoClient.Database(cf.DB.Database).Collection("wallet"); err != nil {
+	} else if walletc = mod.Client.Database(cf.DB.Database).Collection("wallet"); err != nil {
 		panic(err)
 	} else if us, err = services.NewUserService(userc, context.TODO()); err != nil {
 		panic(err)
-	} else if ws, err = services.NewWalletService(walletc, context.TODO()); err != nil {
+	} else if ws, err = services.NewWalletService(walletc, context.TODO(), mod); err != nil {
 		panic(err)
 		/* 컨트롤러 초기화 */
 	} else if lc, err = controllers.NewGoogleLoginController(us, cf); err != nil {
 		panic(err)
 	} else if cc, err = controllers.NewController(); err != nil {
 		panic(err)
-	} else if wc, err = controllers.NewWalletController(ws, cf); err != nil {
+	} else if wc, err = controllers.NewWalletController(ws, cf, mod); err != nil {
 		panic(err)
 	} else if rt, err = route.NewRouter(&cc, &lc, &wc); err != nil {
 		panic(fmt.Errorf("router.NewRouter > %v", err))
 	}
 
+	mongoClient = mod.Client //어디서 쓰실까봐 살려둠
 }
 
 func main() {

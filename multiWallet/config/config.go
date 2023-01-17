@@ -19,9 +19,20 @@ type Config struct {
 		Mbackup int
 	}
 	DB struct {
-		Host     string
-		Database string
+		Host         string
+		Database     string
+		UsersDB      string
+		UserInfoColl string
 	}
+	Client struct {
+		UrlWemix string
+		UrlEth   string
+		UrlKlay  string
+		// WemixTokenAddress  map[string]string
+		// EthTokenAddress    map[string]string
+		// KlaytnTokenAddress map[string]string
+	}
+
 	Oauth2 map[string]map[string]interface{}
 	Wallet map[string]map[string]interface{}
 }
