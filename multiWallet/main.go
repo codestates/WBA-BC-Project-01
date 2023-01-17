@@ -24,7 +24,9 @@ import (
 var (
 	server      *gin.Engine
 	us          services.UserService
+	ws          services.WalletService
 	userc       *mongo.Collection
+	walletc     *mongo.Collection
 	mongoClient *mongo.Client
 	err         error
 	g           errgroup.Group
@@ -57,15 +59,19 @@ func init() {
 		panic(err)
 	} else if userc = mongoClient.Database(cf.DB.Database).Collection("member"); err != nil {
 		panic(err)
-		/* 유저 서비스 초기화 */
+		/* 서비스 초기화 */
+	} else if walletc = mongoClient.Database(cf.DB.Database).Collection("wallet"); err != nil {
+		panic(err)
 	} else if us, err = services.NewUserService(userc, context.TODO()); err != nil {
+		panic(err)
+	} else if ws, err = services.NewWalletService(walletc, context.TODO()); err != nil {
 		panic(err)
 		/* 컨트롤러 초기화 */
 	} else if lc, err = controllers.NewGoogleLoginController(us, cf); err != nil {
 		panic(err)
 	} else if cc, err = controllers.NewController(); err != nil {
 		panic(err)
-	} else if wc, err = controllers.NewWalletController(cf); err != nil {
+	} else if wc, err = controllers.NewWalletController(ws, cf); err != nil {
 		panic(err)
 	} else if rt, err = route.NewRouter(&cc, &lc, &wc); err != nil {
 		panic(fmt.Errorf("router.NewRouter > %v", err))

@@ -3,7 +3,6 @@ package models
 import (
 	"context"
 	"fmt"
-	"log"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -31,18 +30,4 @@ func NewModel(mongoUrl string) (*mongo.Client, error) {
 	fmt.Println("Mongo DB Successful Connected")
 
 	return r.Client, nil
-}
-
-func (p *Model) SaveUserInfo(keyjson *Keystores) error {
-
-	_, err := p.colBlock.InsertOne(context.TODO(), keyjson)
-	if err != nil {
-		log.Fatal(err)
-		return err
-	}
-
-	fmt.Println("Insert success")
-	//fmt.Println("User email : ", email)
-
-	return nil
 }
