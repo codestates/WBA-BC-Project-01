@@ -7,21 +7,14 @@ $(document).ready(()=> {
       dataType: "json"
     }).done((mnemonics) => { // 성공 
       codes =JSON.parse(JSON.stringify(mnemonics)).mnemonic
-      $('#mnemonics').text(codes);
       $('#mnemonic').val(codes)
-      console.log($('#mnemonic').val())
-      $('#CreateWallet').html('니모닉 코드 확인');
-      $('#CreateWallet').off('click');
+      $('#walletForm').show(1000)
+      $('#CreateWallet').hide()
     }).fail((xhr, status, error) => { // 실패
       console.log("status:",status)
       console.log("error:",error)
     })
   })
-
-  $('#confirm').click(()=>{
-    $('#walletForm').show(1000)
-  })
-  
 })
 
 function check() { 

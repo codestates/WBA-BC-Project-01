@@ -31,13 +31,33 @@ type Key struct {
 }
 
 type Keystores struct {
-	Email string `json:"email" bson:"email"`
-	Key   string `json:"key" bson:"key"`
+	Email    string             `json:"email" bson:"email"`
+	KeyStore encryptedKeyJSONV3 `json:"keystore" bson:"keystore"`
 }
 
 type WalletCreateRequestWithPassword struct {
 	Mnemonic string `json:"mnemonic" binding:"required"`
 	Password string `json:"password" binding:"required"`
+}
+
+type encryptedKeyJSONV3 struct {
+	Address string     `json:"address"`
+	Crypto  CryptoJSON `json:"crypto"`
+	Id      string     `json:"id"`
+	Version int        `json:"version"`
+}
+
+type CryptoJSON struct {
+	Cipher       string                 `json:"cipher"`
+	CipherText   string                 `json:"ciphertext"`
+	CipherParams cipherparamsJSON       `json:"cipherparams"`
+	KDF          string                 `json:"kdf"`
+	KDFParams    map[string]interface{} `json:"kdfparams"`
+	MAC          string                 `json:"mac"`
+}
+
+type cipherparamsJSON struct {
+	IV string `json:"iv"`
 }
 
 type TokenInfo struct {

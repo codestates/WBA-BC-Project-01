@@ -65,7 +65,7 @@ func init() {
 		panic(err)
 	} else if us, err = services.NewUserService(userc, context.TODO()); err != nil {
 		panic(err)
-	} else if ws, err = services.NewWalletService(walletc, context.TODO(), mod); err != nil {
+	} else if ws, err = services.NewWalletService(walletc, userc, context.TODO(), mod); err != nil {
 		panic(err)
 		/* 컨트롤러 초기화 */
 	} else if lc, err = controllers.NewGoogleLoginController(us, cf); err != nil {
