@@ -74,14 +74,14 @@ func (lc *GoogleLoginController) GoogleAuthCallback(ctx *gin.Context) {
 		return
 	}
 	// 기존 사용자인지 , 회원가입(지갑생성) 이 필요한 사용자인지 검사
-	_, err = lc.UserService.CheckUser(email)
+	user, err := lc.UserService.CheckUser(email)
 	if err != nil {
 		//회원가입이 필요한 사용자
 		ctx.HTML(http.StatusOK, "register.html", gin.H{"email": email})
 		return
 	}
-
-	ctx.HTML(http.StatusOK, "index.html", gin.H{"isLogined": true, "id": email})
+	// 기존 사용자
+	ctx.HTML(http.StatusOK, "index.html", gin.H{"isLogined": true, "email": user.Email, "address": user.Address})
 }
 
 func (lc *GoogleLoginController) getGoogleUserInfo(code string, ctx *gin.Context) (string, error) {
