@@ -19,12 +19,14 @@ import (
 
 type WalletServiceImplement struct {
 	wc  *mongo.Collection
+	uc  *mongo.Collection
 	ctx context.Context
 }
 
-func NewWalletService(walletcollection *mongo.Collection, ctx context.Context) (WalletService, error) {
+func NewWalletService(walletcollection *mongo.Collection, usercollection *mongo.Collection, ctx context.Context) (WalletService, error) {
 	return &WalletServiceImplement{
 		wc:  walletcollection,
+		uc:  usercollection,
 		ctx: ctx,
 	}, nil
 }
@@ -74,6 +76,11 @@ func (w *WalletServiceImplement) NewWalletWithKeystore(privateKey *ecdsa.Private
 	userkeystore.Email = walletDTO.Email
 	json.Unmarshal(keyjson, &userkeystore.KeyStore)
 	w.wc.InsertOne(w.ctx, userkeystore)
+
+	var user models.User
+	user.Address = address
+	user.Email = walletDTO.Email
+	w.uc.InsertOne(w.ctx, user)
 
 	return address, privateKey, walletDTO.Email
 }

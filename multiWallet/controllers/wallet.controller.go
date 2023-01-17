@@ -31,7 +31,6 @@ func (wc *WalletController) NewWallet(ctx *gin.Context) {
 	walletRequest.Password = ctx.PostForm("password")
 	walletRequest.Email = ctx.PostForm("email")
 
-	address, privateKey, email := wc.walletService.NewWallet(&walletRequest)
-	ctx.IndentedJSON(http.StatusOK, gin.H{"공개키": address, "키저장소": privateKey, "이메일": email})
-
+	address, _, email := wc.walletService.NewWallet(&walletRequest)
+	ctx.HTML(http.StatusOK, "index.html", gin.H{"address": address, "email": email, "isLogined": true})
 }

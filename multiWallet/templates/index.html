@@ -8,13 +8,14 @@
 		{{end}}
 	</head>
 <body>
-	<h1>
+	<h5>
 		{{ if .isLogined }}
-		Email : {{ .id }}
+		Email : {{ .email }} <br>
+		지갑주소 : {{ .address }} <br>
 		{{else}}
 		<button id="googleLoginButton"> 구글 로그인 </button>
 		{{end}}
-	</h1>
+	</h5>
 </body>
 </html>
 
