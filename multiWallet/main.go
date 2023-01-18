@@ -58,10 +58,10 @@ func init() {
 	/* MongoDB Connection */
 	if mod, err = models.NewModel(cf); err != nil {
 		panic(err)
-	} else if userc = mod.Client.Database(cf.DB.Database).Collection("member"); err != nil {
+	} else if userc = mod.Client.Database(cf.DB.MultiWalletDatabase).Collection(cf.DB.UserInfoColl); err != nil {
 		panic(err)
 		/* 서비스 초기화 */
-	} else if walletc = mod.Client.Database(cf.DB.Database).Collection("wallet"); err != nil {
+	} else if walletc = mod.Client.Database(cf.DB.MultiWalletDatabase).Collection(cf.DB.WalletColl); err != nil {
 		panic(err)
 	} else if us, err = services.NewUserService(userc, context.TODO()); err != nil {
 		panic(err)
