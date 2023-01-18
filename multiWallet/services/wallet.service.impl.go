@@ -154,10 +154,15 @@ func (w *WalletServiceImplement) TransferTokens(mod models.TransferData) models.
 	}
 
 	//작업중
-	//const decimal = 10 ^ 18
-	value := int64(mod.SendValue * 1000000000000000000)
+
+	//value := int64(mod.SendValue * 1000000000000000000)
+	//value := int64(mod.SendValue * decimal)
+	decimal := math.Pow(10, 18)
+	value := int64(mod.SendValue * decimal)
 	//value := int64(mod.SendValue * decimal)
 	fmt.Println("value : ", value)
+	//value := big.NewInt(1000000000000000000) // in wei (1 eth)
+
 	//value := big.NewInt(1000000000000000000) // in wei (1 eth)
 
 	fromAddress := common.HexToAddress(mod.FromAddress)
@@ -168,14 +173,23 @@ func (w *WalletServiceImplement) TransferTokens(mod models.TransferData) models.
 	var data []byte
 	//토큰의 경우 data에 Set 한다.
 	if mod.TokenContract != "" {
+
+		fmt.Println("sendValue : ", sendValue)
+
 		tokenAddress := common.HexToAddress(mod.TokenContract)
 		data = SetContractData(toAddress, sendValue)
 		sendValue = big.NewInt(0) //토큰 전송의 경우, 컨트랙트에 갯수 설정
 		toAddress = tokenAddress  //받는 사람에게 토큰 주소로 변경
 	}
 
+	// privateKey, err := w.GetPrivateKey(mod.UserMail, mod.UserPWD)
+	// if err != nil {
+	// 	panic("privateKey err")
+	// }
+	privateKey := "-"
+
 	//트랜잭션 실행
-	tx := StartTransaction(client, fromAddress, toAddress, sendValue, data)
+	tx := StartTransaction(client, fromAddress, toAddress, sendValue, data, privateKey)
 	mod.TransactionInfo = tx
 	return mod
 }
@@ -203,10 +217,10 @@ func SetContractData(toAddress common.Address, sendValue *big.Int) []byte {
 	return pdata
 }
 
-func StartTransaction(client *ethclient.Client, fromAddress common.Address, toAddress common.Address, sendValue *big.Int, data []byte) string {
+func StartTransaction(client *ethclient.Client, fromAddress common.Address, toAddress common.Address, sendValue *big.Int, data []byte, privateKey string) string {
 
 	//프라이베잇 키를 가져와야한다.
-	fromPrivateKey, err := crypto.HexToECDSA("-")
+	fromPrivateKey, err := crypto.HexToECDSA(privateKey)
 	if err != nil {
 		fmt.Println(err)
 	}

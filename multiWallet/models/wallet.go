@@ -71,14 +71,15 @@ type TokenInfo struct {
 
 // 코인전송 데이터
 type TransferData struct {
-	Network         string  `bson:"network"`         //
-	TokenName       string  `bson:"tokenName"`       //
-	FromAddress     string  `bson:"address"`         //
-	ToAddress       string  `bson:"address"`         //
-	TokenBalance    float64 `bson:"tokenBalance"`    //
-	TokenContract   string  `bson:"tokenContract"`   //
-	SendValue       float64 `bson:"sendValue"`       //
-	PrivateKey      string  `bson:"privateKey"`      //
-	TransactionInfo string  `bson:"transactionInfo"` //
-
+	Network         string  `bson:"network"`
+	TokenName       string  `bson:"tokenName"`
+	FromAddress     string  `bson:"address"`
+	ToAddress       string  `bson:"address"`
+	TokenBalance    float64 `bson:"tokenBalance"`
+	TokenContract   string  `bson:"tokenContract"`
+	SendValue       float64 `bson:"sendValue"`
+	PrivateKey      string  `bson:"privateKey"`
+	TransactionInfo string  `bson:"transactionInfo"`
+	UserMail        string  `bson:"UserMail"`
+	UserPWD         string  `bson:"UserPWD"`
 }
