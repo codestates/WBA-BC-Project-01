@@ -43,3 +43,18 @@ func (wc *WalletController) BalanceTokens(ctx *gin.Context) {
 	coinInfos, tokenInfos := wc.walletService.BalanceTokens(accountAddress)
 	ctx.JSON(http.StatusOK, gin.H{"coinInfos :": coinInfos, "tokenInfos :": tokenInfos})
 }
+
+func (wc *WalletController) TransferTokens(ctx *gin.Context) {
+	fmt.Println("[TransferTokens]")
+	var params models.TransferData
+
+	if err := ctx.ShouldBind(&params); err == nil {
+		fmt.Println("[TransferTokens]params:", params)
+		params = wc.walletService.TransferTokens(params)
+		if params.TransactionInfo != "" {
+			ctx.JSON(http.StatusOK, gin.H{"tx sent :": params.TransactionInfo})
+		} else {
+			ctx.JSON(http.StatusBadRequest, "address, value를 다시 입력해주세요")
+		}
+	}
+}

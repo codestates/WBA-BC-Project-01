@@ -60,10 +60,25 @@ type cipherparamsJSON struct {
 	IV string `json:"iv"`
 }
 
+// 자신이 가지고 있는 코인/토큰 정보
 type TokenInfo struct {
 	Contract   string     `bson:"contract"`
 	SymbolName string     `bson:"symbolName"`
 	BalanceOf  *big.Float `bson:"balanceOf"`
 	Price      int64      `bson:"price"`
 	Network    string     `bson:"network"` //코인 이름을 저장 (출력시 참고)
+}
+
+// 코인전송 데이터
+type TransferData struct {
+	Network         string  `bson:"network"`         //
+	TokenName       string  `bson:"tokenName"`       //
+	FromAddress     string  `bson:"address"`         //
+	ToAddress       string  `bson:"address"`         //
+	TokenBalance    float64 `bson:"tokenBalance"`    //
+	TokenContract   string  `bson:"tokenContract"`   //
+	SendValue       float64 `bson:"sendValue"`       //
+	PrivateKey      string  `bson:"privateKey"`      //
+	TransactionInfo string  `bson:"transactionInfo"` //
+
 }
