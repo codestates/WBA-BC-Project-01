@@ -30,10 +30,13 @@ import (
 )
 
 type WalletServiceImplement struct {
-	wc  *mongo.Collection
-	uc  *mongo.Collection
-	ctx context.Context
-	mod *models.Model
+	wc      *mongo.Collection
+	uc      *mongo.Collection
+	wemixc  *mongo.Collection
+	klaytnc *mongo.Collection
+	ethc    *mongo.Collection
+	ctx     context.Context
+	mod     *models.Model
 }
 
 // 심볼 나중에 수정 예정 화면 출력할 때 토큰의 네트워크를 알기 위해
@@ -41,13 +44,15 @@ var WemixSymbol string = "WEMIX"
 var EthSymbol string = "ETH"
 var KlaySymbol string = "KLAY"
 
-func NewWalletService(walletcollection *mongo.Collection, usercollection *mongo.Collection, ctx context.Context, mod *models.Model) (WalletService, error) {
-
+func NewWalletService(walletcollection *mongo.Collection, usercollection *mongo.Collection, wemixcollection *mongo.Collection, klaytncollection *mongo.Collection, ethcollection *mongo.Collection, ctx context.Context, mod *models.Model) (WalletService, error) {
 	return &WalletServiceImplement{
-		wc:  walletcollection,
-		uc:  usercollection,
-		ctx: ctx,
-		mod: mod,
+		wc:      walletcollection,
+		uc:      usercollection,
+		wemixc:  wemixcollection,
+		klaytnc: klaytncollection,
+		ethc:    ethcollection,
+		ctx:     ctx,
+		mod:     mod,
 	}, nil
 }
 
@@ -207,7 +212,7 @@ func SetContractData(toAddress common.Address, sendValue *big.Int) []byte {
 func StartTransaction(client *ethclient.Client, fromAddress common.Address, toAddress common.Address, sendValue *big.Int, data []byte) string {
 
 	//프라이베잇 키를 가져와야한다.
-	fromPrivateKey, err := crypto.HexToECDSA("-")
+	fromPrivateKey, err := crypto.HexToECDSA("ca0b20afb40be6d708ae6d9815f409229d3f3fc11719f5608d119306e491bf07")
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -334,16 +339,33 @@ func BalanceToken(client *ethclient.Client, ownerAddress string, contranct strin
 
 	return tokenInfo, err
 }
-func (w *WalletServiceImplement) TrackAddress(from string) []models.Transaction {
+
+func (w *WalletServiceImplement) TrackByAddress(from string) []models.Transaction {
 	filter := bson.M{"from": from}
-	opts := options.Find().SetSort(bson.D{{"blocknumber", 1}})
-	cursor, err := w.wc.Find(context.TODO(), filter, opts)
+	opts := options.Find().SetSort(bson.D{{Key: "blockNumber", Value: -1}})
+	cursor, err := w.wemixc.Find(context.TODO(), filter, opts)
+	if err != nil {
+		log.Fatal(err)
+	}
 	var transactions []models.Transaction
 
 	if err = cursor.All(context.TODO(), &transactions); err != nil {
 		panic(err)
 	}
 
+	return transactions
+}
+func (w *WalletServiceImplement) TrackByContract(to string) []models.Transaction {
+	filter := bson.M{"to": to}
+	opts := options.Find().SetSort(bson.D{{Key: "blocknumber", Value: 1}})
+	cursor, err := w.wemixc.Find(context.TODO(), filter, opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	var transactions []models.Transaction
+	if err = cursor.All(context.TODO(), &transactions); err != nil {
+		panic(err)
+	}
 	for _, result := range transactions {
 		cursor.Decode(&result)
 		output, err := json.MarshalIndent(result, "", "   ")
@@ -352,7 +374,5 @@ func (w *WalletServiceImplement) TrackAddress(from string) []models.Transaction 
 		}
 		fmt.Println(output)
 	}
-
 	return transactions
-
 }

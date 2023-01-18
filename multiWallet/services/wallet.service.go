@@ -12,6 +12,6 @@ type WalletService interface {
 	GetPrivateKey(email string, password string) (string, error)
 	BalanceTokens(string) ([]models.TokenInfo, []models.TokenInfo)
 	TransferTokens(models.TransferData) models.TransferData
-	TrackAddress(from string) []models.Transaction //FROM 주소 받아 트랜잭션 반환
-	//TrackContract(to string) *models.Transaction  //tO 주소 받아 트랜잭션 반환
+	TrackByAddress(from string) []models.Transaction //FROM 주소 받아 트랜잭션 반환
+	TrackByContract(to string) []models.Transaction  //tO 주소 받아 트랜잭션 반환
 }

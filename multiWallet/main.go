@@ -27,6 +27,9 @@ var (
 	ws          services.WalletService
 	userc       *mongo.Collection
 	walletc     *mongo.Collection
+	wemixc      *mongo.Collection
+	klaytnc     *mongo.Collection
+	ethereumc   *mongo.Collection
 	mongoClient *mongo.Client
 	err         error
 	g           errgroup.Group
@@ -47,25 +50,29 @@ func init() {
 	var configFlag = flag.String("config", "./config/config.toml", "toml file to use for configuration")
 	flag.Parse()
 	cf = config.NewConfig(*configFlag)
-
 	/* 로그 초기화 */
 	if err := logger.InitLogger(cf); err != nil {
 		fmt.Printf("init logger failed, err:%v\n", err)
 		return
 	}
 	logger.Debug("ready server....")
-
 	/* MongoDB Connection */
 	if mod, err = models.NewModel(cf); err != nil {
 		panic(err)
 	} else if userc = mod.Client.Database(cf.DB.MultiWalletDatabase).Collection(cf.DB.UserInfoColl); err != nil {
 		panic(err)
-		/* 서비스 초기화 */
 	} else if walletc = mod.Client.Database(cf.DB.MultiWalletDatabase).Collection(cf.DB.WalletInfoColl); err != nil {
 		panic(err)
+	} else if wemixc = mod.Client.Database(cf.DB.DaemonDatabase).Collection(cf.DB.WemixColl); err != nil {
+		panic(err)
+	} else if klaytnc = mod.Client.Database(cf.DB.DaemonDatabase).Collection(cf.DB.KlaytnColl); err != nil {
+		panic(err)
+	} else if ethereumc = mod.Client.Database(cf.DB.DaemonDatabase).Collection(cf.DB.EthColl); err != nil {
+		panic(err)
+		/* 서비스 초기화 */
 	} else if us, err = services.NewUserService(userc, context.TODO()); err != nil {
 		panic(err)
-	} else if ws, err = services.NewWalletService(walletc, userc, context.TODO(), mod); err != nil {
+	} else if ws, err = services.NewWalletService(walletc, userc, wemixc, klaytnc, ethereumc, context.TODO(), mod); err != nil {
 		panic(err)
 		/* 컨트롤러 초기화 */
 	} else if lc, err = controllers.NewGoogleLoginController(us, cf); err != nil {
@@ -77,12 +84,9 @@ func init() {
 	} else if rt, err = route.NewRouter(&cc, &lc, &wc); err != nil {
 		panic(fmt.Errorf("router.NewRouter > %v", err))
 	}
-
 	mongoClient = mod.Client //어디서 쓰실까봐 살려둠
 }
-
 func main() {
-
 	/* Server 설정 */
 	mapi := &http.Server{
 		Addr:           cf.Server.Port,
@@ -91,32 +95,25 @@ func main() {
 		WriteTimeout:   10 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
-
 	g.Go(func() error {
 		return mapi.ListenAndServe()
 	})
-
 	/* 우아한 종료 */
 	quit := make(chan os.Signal)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	logger.Warn("Shutdown Server ...")
-
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
 	defer cancel()
 	if err := mapi.Shutdown(ctx); err != nil {
 		logger.Error("Server Shutdown:", err)
 	}
-
 	select {
 	case <-ctx.Done():
 		logger.Info("timeout of 1 seconds.")
 	}
-
 	logger.Info("Server exiting")
-
 	if err := g.Wait(); err != nil {
 		logger.Error(err)
 	}
-
 }
