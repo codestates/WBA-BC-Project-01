@@ -40,6 +40,6 @@ func (wc *WalletController) NewWallet(ctx *gin.Context) {
 func (wc *WalletController) BalanceTokens(ctx *gin.Context) {
 	fmt.Println("[BalanceTokens]")
 	accountAddress := ctx.Query("address")
-	tokenInfos, coinInfos := wc.walletService.BalanceTokens(accountAddress)
-	ctx.JSON(http.StatusOK, gin.H{"tokenInfos :": tokenInfos, "coinInfos :": coinInfos})
+	coinInfos, tokenInfos := wc.walletService.BalanceTokens(accountAddress)
+	ctx.JSON(http.StatusOK, gin.H{"coinInfos :": coinInfos, "tokenInfos :": tokenInfos})
 }
