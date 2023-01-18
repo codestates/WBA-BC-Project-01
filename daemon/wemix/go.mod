@@ -11,6 +11,7 @@ require (
 )
 
 require (
+	github.com/766b/go-outliner v0.0.0-20180511142203-fc6edecdadd7 // indirect
 	github.com/BurntSushi/toml v1.2.1 // indirect
 	github.com/StackExchange/wmi v0.0.0-20180116203802-5d049714c4a6 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.2.0 // indirect

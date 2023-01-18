@@ -12,7 +12,6 @@ require (
 	github.com/swaggo/files v1.0.0
 	github.com/swaggo/gin-swagger v1.5.3
 	github.com/swaggo/swag v1.8.9
-	github.com/tidwall/pretty v1.0.0
 	go.mongodb.org/mongo-driver v1.11.1
 	go.uber.org/zap v1.24.0
 	golang.org/x/oauth2 v0.4.0
@@ -21,6 +20,7 @@ require (
 
 require (
 	cloud.google.com/go/compute/metadata v0.2.0 // indirect
+	github.com/766b/go-outliner v0.0.0-20180511142203-fc6edecdadd7 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
