@@ -31,6 +31,11 @@ type WalletServiceImplement struct {
 	mod *models.Model
 }
 
+// 심볼 나중에 수정 예정 화면 출력할 때 토큰의 네트워크를 알기 위해
+var WemixSymbol string = "WEMIX"
+var EthSymbol string = "ETH"
+var KlaySymbol string = "KLAY"
+
 func NewWalletService(walletcollection *mongo.Collection, usercollection *mongo.Collection, ctx context.Context, mod *models.Model) (WalletService, error) {
 
 	return &WalletServiceImplement{
@@ -116,22 +121,19 @@ func (w *WalletServiceImplement) GetPrivateKey(email string, password string) (s
 	return hex.EncodeToString(key.PrivateKey.D.Bytes()), nil
 }
 
-func (w *WalletServiceImplement) BalanceTokens(address string) ([]*models.TokenInfo, []*models.TokenInfo) {
-	// 심볼 나중에 수정 예정 화면 출력할 때 토큰의 네트워크를 알기 위해
-	SymbolWemix := "WEMIX"
-	SymbolEth := "ETH"
-	//SymbolKlay := "KLAY"
-	fmt.Println("[WalletServiceImplement.BalanceTokens]")
+func (w *WalletServiceImplement) BalanceTokens(address string) ([]models.TokenInfo, []models.TokenInfo) {
 
-	var coinInfos []*models.TokenInfo
-	coinInfos = append(coinInfos, w.SetCoinInfo(SymbolWemix, address, w.mod.WemixClient))
-	coinInfos = append(coinInfos, w.SetCoinInfo(SymbolEth, address, w.mod.EthClient))
-	//coinInfos = append(coinInfos, w.SetCoinInfo(SymbolKlay, address, w.mod.KlaytnClient))
+	logger.Info("[WalletServiceImplement.BalanceTokens]")
 
-	var tokenInfos []*models.TokenInfo
-	tokenInfos = w.SetTokenInfo(SymbolWemix, address, w.mod.WemixClient, w.mod.WemixTokenAddress, tokenInfos)
-	tokenInfos = w.SetTokenInfo(SymbolEth, address, w.mod.EthClient, w.mod.EthTokenAddress, tokenInfos)
-	//tokenInfos = SetTokenInfo(SymbolKlay, address, w.mod.KlaytnClient, w.mod.KlaytnTokenAddress, tokenInfos)
+	var coinInfos []models.TokenInfo
+	coinInfos = append(coinInfos, SetCoinInfo(WemixSymbol, address, w.mod.WemixClient))
+	coinInfos = append(coinInfos, SetCoinInfo(EthSymbol, address, w.mod.EthClient))
+	coinInfos = append(coinInfos, SetCoinInfo(KlaySymbol, address, w.mod.KlaytnClient))
+
+	var tokenInfos []models.TokenInfo
+	tokenInfos = SetTokenInfo(WemixSymbol, address, w.mod.WemixClient, w.mod.WemixTokenAddress, tokenInfos)
+	tokenInfos = SetTokenInfo(EthSymbol, address, w.mod.EthClient, w.mod.EthTokenAddress, tokenInfos)
+	tokenInfos = SetTokenInfo(KlaySymbol, address, w.mod.KlaytnClient, w.mod.KlaytnTokenAddress, tokenInfos)
 
 	return coinInfos, tokenInfos
 }
@@ -142,7 +144,7 @@ func GetEthValue(balance *big.Int) *big.Float {
 	return new(big.Float).Quo(fbalance, big.NewFloat(math.Pow10(18)))
 }
 
-func (w *WalletServiceImplement) SetCoinInfo(symbolName string, accountAddress string, client *ethclient.Client) *models.TokenInfo {
+func SetCoinInfo(symbolName string, accountAddress string, client *ethclient.Client) models.TokenInfo {
 	account := common.HexToAddress(accountAddress)
 	balance, err := client.BalanceAt(context.Background(), account, nil)
 	if err != nil {
@@ -152,10 +154,10 @@ func (w *WalletServiceImplement) SetCoinInfo(symbolName string, accountAddress s
 	coinInfo.SymbolName = symbolName
 	coinInfo.Network = symbolName
 	coinInfo.BalanceOf = GetEthValue(balance)
-	return &coinInfo
+	return coinInfo
 }
 
-func (w *WalletServiceImplement) SetTokenInfo(symbolName string, accountAddress string, client *ethclient.Client, contractAddress map[string]string, tokenInfos []*models.TokenInfo) []*models.TokenInfo {
+func SetTokenInfo(symbolName string, accountAddress string, client *ethclient.Client, contractAddress map[string]string, tokenInfos []models.TokenInfo) []models.TokenInfo {
 	for _, contranct := range contractAddress {
 		tokenInfo, err := BalanceToken(client, accountAddress, contranct, symbolName)
 		if err != nil {
@@ -167,7 +169,7 @@ func (w *WalletServiceImplement) SetTokenInfo(symbolName string, accountAddress 
 	return tokenInfos
 }
 
-func BalanceToken(client *ethclient.Client, ownerAddress string, contranct string, network string) (*models.TokenInfo, error) {
+func BalanceToken(client *ethclient.Client, ownerAddress string, contranct string, network string) (models.TokenInfo, error) {
 
 	tknAddress := common.HexToAddress(contranct)
 	ownAddress := common.HexToAddress(ownerAddress)
@@ -190,5 +192,5 @@ func BalanceToken(client *ethclient.Client, ownerAddress string, contranct strin
 	tokenInfo.Network = network
 	tokenInfo.BalanceOf = GetEthValue(tokenBalance)
 
-	return &tokenInfo, err
+	return tokenInfo, err
 }
