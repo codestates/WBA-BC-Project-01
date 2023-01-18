@@ -58,3 +58,38 @@ func (wc *WalletController) TransferTokens(ctx *gin.Context) {
 		}
 	}
 }
+
+func (wc *WalletController) DoTracking(ctx *gin.Context) {
+
+	// UI에 따라 string 어떻게 가져올지 구현방법 변경 필요
+	//r, _ := models.NewModel(cf.DB.Host)
+	from := ctx.Param("from")
+	scope := wc.walletService.TrackAddress(from)
+
+	for _, scp := range scope {
+		txHash := scp.TxHash
+		blockNum := scp.BlockNumber
+		addressFrom := scp.From
+		addressTo := scp.To
+		amount := scp.Amount
+		ctx.IndentedJSON(http.StatusOK, gin.H{
+			"TX HASH": txHash,
+			"BLOCK #": blockNum,
+			"FROM":    addressFrom,
+			"TO":      addressTo,
+			"AMOUNT":  amount})
+	}
+	//txHash := scope.TxHash
+	//blockNum := scope.BlockNumber
+	//addressFrom := scope.From
+	//addressTo := scope.To
+	//amount := scope.Amount
+	/*
+		ctx.IndentedJSON(http.StatusOK, gin.H{
+			"TX HASH": txHash,
+			"BLOCK #": blockNum,
+			"FROM":    addressFrom,
+			"TO":      addressTo,
+			"AMOUNT":  amount})
+	*/
+}
