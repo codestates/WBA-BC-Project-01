@@ -61,7 +61,11 @@ func init() {
 	} else if userc = mod.Client.Database(cf.DB.MultiWalletDatabase).Collection(cf.DB.UserInfoColl); err != nil {
 		panic(err)
 		/* 서비스 초기화 */
+<<<<<<< Updated upstream
 	} else if walletc = mod.Client.Database(cf.DB.MultiWalletDatabase).Collection(cf.DB.WalletInfoColl); err != nil {
+=======
+	} else if walletc = mongoClient.Database(cf.DB.Database).Collection("wemixBlock"); err != nil {
+>>>>>>> Stashed changes
 		panic(err)
 	} else if us, err = services.NewUserService(userc, context.TODO()); err != nil {
 		panic(err)

@@ -27,6 +27,8 @@ type Config struct {
 		MultiWalletDatabase string //멀티월렛 데이터베이스
 		UserInfoColl        string //유저 컬렉션
 		WalletInfoColl      string //월렛 컬렉션
+		Database            string
+		Collection          string
 	}
 	Client struct {
 		UrlWemix           string

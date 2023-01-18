@@ -60,6 +60,7 @@ type cipherparamsJSON struct {
 	IV string `json:"iv"`
 }
 
+<<<<<<< Updated upstream
 // 자신이 가지고 있는 코인/토큰 정보
 type TokenInfo struct {
 	Contract   string     `bson:"contract"`
@@ -83,3 +84,17 @@ type TransferData struct {
 	UserMail        string  `bson:"UserMail"`
 	UserPWD         string  `bson:"UserPWD"`
 }
+=======
+type Transaction struct {
+	TxHash      string `bson:"hash"`
+	From        string `bson:"from"`
+	To          string `bson:"to"` // 컨트랙트의 경우 nil 반환
+	Nonce       uint64 `bson:"nonce"`
+	GasPrice    uint64 `bson:"gasPrice"`
+	GasLimit    uint64 `bson:"gasLimit"`
+	Amount      uint64 `bson:"amount"`
+	BlockHash   string `bson:"blockHash"`
+	BlockNumber uint64 `bson:"blockNumber"`
+}
+
+>>>>>>> Stashed changes

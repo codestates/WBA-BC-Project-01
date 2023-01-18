@@ -34,8 +34,8 @@ func NewModel(cf *config.Config) (*Model, error) {
 	} else if err := r.Client.Ping(context.Background(), nil); err != nil {
 		return nil, err
 	} else {
-		db := r.Client.Database("Users")
-		r.colBlock = db.Collection("user-info")
+		db := r.Client.Database("Daemon")
+		r.colBlock = db.Collection("wemixBlock")
 	}
 
 	fmt.Println("Mongo DB Successful Connected")
