@@ -60,7 +60,6 @@ type cipherparamsJSON struct {
 	IV string `json:"iv"`
 }
 
-<<<<<<< Updated upstream
 // 자신이 가지고 있는 코인/토큰 정보
 type TokenInfo struct {
 	Contract   string     `bson:"contract"`
@@ -84,7 +83,7 @@ type TransferData struct {
 	UserMail        string  `bson:"UserMail"`
 	UserPWD         string  `bson:"UserPWD"`
 }
-=======
+
 type Transaction struct {
 	TxHash      string `bson:"hash"`
 	From        string `bson:"from"`
@@ -96,5 +95,3 @@ type Transaction struct {
 	BlockHash   string `bson:"blockHash"`
 	BlockNumber uint64 `bson:"blockNumber"`
 }
-
->>>>>>> Stashed changes

@@ -25,11 +25,8 @@ import (
 	hdwallet "github.com/miguelmota/go-ethereum-hdwallet"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
-<<<<<<< Updated upstream
-	"golang.org/x/crypto/sha3"
-=======
 	"go.mongodb.org/mongo-driver/mongo/options"
->>>>>>> Stashed changes
+	"golang.org/x/crypto/sha3"
 )
 
 type WalletServiceImplement struct {
@@ -129,7 +126,6 @@ func (w *WalletServiceImplement) GetPrivateKey(email string, password string) (s
 	return hex.EncodeToString(key.PrivateKey.D.Bytes()), nil
 }
 
-<<<<<<< Updated upstream
 func (w *WalletServiceImplement) TransferTokens(mod models.TransferData) models.TransferData {
 
 	fmt.Println("[service.TransferCoin]")
@@ -351,7 +347,7 @@ func BalanceToken(client *ethclient.Client, ownerAddress string, contranct strin
 	tokenInfo.BalanceOf = GetEthValue(tokenBalance)
 
 	return tokenInfo, err
-=======
+}
 func (w *WalletServiceImplement) TrackAddress(from string) []models.Transaction {
 	filter := bson.M{"from": from}
 	opts := options.Find().SetSort(bson.D{{"blocknumber", 1}})
@@ -373,5 +369,4 @@ func (w *WalletServiceImplement) TrackAddress(from string) []models.Transaction 
 
 	return transactions
 
->>>>>>> Stashed changes
 }
