@@ -26,7 +26,7 @@ type Config struct {
 		KlaytnColl          string //클레이튼 컬렉션
 		MultiWalletDatabase string //멀티월렛 데이터베이스
 		UserInfoColl        string //유저 컬렉션
-		WalletColl          string //월렛 컬렉션
+		WalletInfoColl      string //월렛 컬렉션
 	}
 	Client struct {
 		UrlWemix           string
