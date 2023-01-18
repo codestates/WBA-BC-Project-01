@@ -25,12 +25,12 @@ type Config struct {
 		UserInfoColl string
 	}
 	Client struct {
-		UrlWemix string
-		UrlEth   string
-		UrlKlay  string
-		// WemixTokenAddress  map[string]string
-		// EthTokenAddress    map[string]string
-		// KlaytnTokenAddress map[string]string
+		UrlWemix           string
+		UrlEth             string
+		UrlKlay            string
+		WemixTokenAddress  map[string]string
+		EthTokenAddress    map[string]string
+		KlaytnTokenAddress map[string]string
 	}
 
 	Oauth2 map[string]map[string]interface{}
