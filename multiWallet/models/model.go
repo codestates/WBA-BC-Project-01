@@ -54,12 +54,9 @@ func NewModel(cf *config.Config) (*Model, error) {
 		logger.Error(err)
 	}
 
-	// r.WemixTokenAddress = cf.Client.WemixTokenAddress
-	// r.EthTokenAddress = cf.Client.EthTokenAddress
-	// r.KlaytnTokenAddress = cf.Client.KlaytnTokenAddress
-	r.WemixTokenAddress = map[string]string{"WAL": "0x9Fa7F4E848Df29B3F653c47cC12b4c9bBCf2b99c", "LWS": "0xF01E78a83F3860433B4ef1b1A7f80B82a269A6fd"}
-	r.EthTokenAddress = map[string]string{"WAL": "0x9Fa7F4E848Df29B3F653c47cC12b4c9bBCf2b99c", "LWS": "0xF01E78a83F3860433B4ef1b1A7f80B82a269A6fd"}
-	r.KlaytnTokenAddress = map[string]string{"WAL": "0x9Fa7F4E848Df29B3F653c47cC12b4c9bBCf2b99c", "LWS": "0xF01E78a83F3860433B4ef1b1A7f80B82a269A6fd"}
+	r.WemixTokenAddress = cf.Client.WemixTokenAddress
+	r.EthTokenAddress = cf.Client.EthTokenAddress
+	r.KlaytnTokenAddress = cf.Client.KlaytnTokenAddress
 
 	fmt.Println("ethclient Successful Connected")
 
