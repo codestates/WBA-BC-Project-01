@@ -25,11 +25,13 @@ var (
 	server      *gin.Engine
 	us          services.UserService
 	ws          services.WalletService
+	ms          services.MultiSigWalletService
 	userc       *mongo.Collection
 	walletc     *mongo.Collection
 	wemixc      *mongo.Collection
 	klaytnc     *mongo.Collection
 	ethereumc   *mongo.Collection
+	multisigcol *mongo.Collection
 	mongoClient *mongo.Client
 	err         error
 	g           errgroup.Group
@@ -44,6 +46,7 @@ var (
 	lc controllers.GoogleLoginController
 	uc controllers.UserController
 	wc controllers.WalletController
+	mc controllers.MultisigWalletContrller
 )
 
 func init() {
@@ -69,10 +72,14 @@ func init() {
 		panic(err)
 	} else if ethereumc = mod.Client.Database(cf.DB.DaemonDatabase).Collection(cf.DB.EthColl); err != nil {
 		panic(err)
+	} else if multisigcol = mod.Client.Database(cf.DB.MultiWalletDatabase).Collection(cf.DB.MultiSigWalletCollection); err != nil {
+		panic(err)
 		/* 서비스 초기화 */
 	} else if us, err = services.NewUserService(userc, context.TODO()); err != nil {
 		panic(err)
 	} else if ws, err = services.NewWalletService(walletc, userc, wemixc, klaytnc, ethereumc, context.TODO(), mod); err != nil {
+		panic(err)
+	} else if ms, err = services.NewMultiSigWalletService(userc, walletc, multisigcol, context.TODO(), mod); err != nil {
 		panic(err)
 		/* 컨트롤러 초기화 */
 	} else if lc, err = controllers.NewGoogleLoginController(us, cf); err != nil {
@@ -81,7 +88,9 @@ func init() {
 		panic(err)
 	} else if wc, err = controllers.NewWalletController(ws, cf, mod); err != nil {
 		panic(err)
-	} else if rt, err = route.NewRouter(&cc, &lc, &wc); err != nil {
+	} else if mc, err = controllers.NewMultiSigWalletController(us, ms, ws, mod); err != nil {
+		panic(err)
+	} else if rt, err = route.NewRouter(&cc, &lc, &wc, &mc); err != nil {
 		panic(fmt.Errorf("router.NewRouter > %v", err))
 	}
 	mongoClient = mod.Client //어디서 쓰실까봐 살려둠

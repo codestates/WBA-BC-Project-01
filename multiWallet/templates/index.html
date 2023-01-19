@@ -16,6 +16,7 @@
 		<button id="googleLoginButton"> 구글 로그인 </button>
 		{{end}}
 	</h5>
+	<button id="createMultiwallet">다중서명지갑 생성</button>
 </body>
 </html>
 
@@ -26,4 +27,9 @@
 	googleLoginButton !== null ? addEventListener("click", () => {
 		window.location = "/auth/google/login"
 	}) : null
+
+	document.getElementById("createMultiwallet").addEventListener("click", ()=>{
+		window.location = "/multisigwallet/"
+	})
+
 </script>
