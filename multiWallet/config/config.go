@@ -19,16 +19,15 @@ type Config struct {
 		Mbackup int
 	}
 	DB struct {
-		Host                string
-		DaemonDatabase      string //데몬 데이터베이스
-		EthColl             string //이더리움 컬렉션
-		WemixColl           string //위믹스 컬렉션
-		KlaytnColl          string //클레이튼 컬렉션
-		MultiWalletDatabase string //멀티월렛 데이터베이스
-		UserInfoColl        string //유저 컬렉션
-		WalletInfoColl      string //월렛 컬렉션
-		Database            string
-		Collection          string
+		Host                     string //DB연결 정보
+		DaemonDatabase           string //데몬 데이터베이스
+		EthColl                  string //이더리움 컬렉션
+		WemixColl                string //위믹스 컬렉션
+		KlaytnColl               string //클레이튼 컬렉션
+		MultiWalletDatabase      string //멀티월렛 데이터베이스
+		UserInfoColl             string //유저 컬렉션
+		WalletInfoColl           string //월렛 컬렉션
+		MultiSigWalletCollection string //다중서명지갑 컬렉션
 	}
 	Client struct {
 		UrlWemix           string
