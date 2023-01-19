@@ -95,3 +95,9 @@ type Transaction struct {
 	BlockHash   string `bson:"blockHash"`
 	BlockNumber uint64 `bson:"blockNumber"`
 }
+
+type TxInfo struct {
+	WemixTx  []Transaction
+	KlaytnTx []Transaction
+	EthTx    []Transaction
+}

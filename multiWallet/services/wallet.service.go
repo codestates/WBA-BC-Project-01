@@ -11,6 +11,6 @@ type WalletService interface {
 	NewWalletWithKeystore(privateKey *ecdsa.PrivateKey, address string, walletDTO *models.WalletCreateRequest) (string, *ecdsa.PrivateKey, string) //패스워드로 개인키 키스토어 파일 추출
 	BalanceTokens(string) ([]models.TokenInfo, []models.TokenInfo)
 	TransferTokens(models.TransferData) models.TransferData
-	TrackByAddress(from string) []models.Transaction //FROM 주소 받아 트랜잭션 반환
-	TrackByContract(to string) []models.Transaction  //tO 주소 받아 트랜잭션 반환
+	TrackByAddress(from string) models.TxInfo //FROM 주소 받아 트랜잭션 반환
+	TrackByContract(to string) models.TxInfo  //tO 주소 받아 트랜잭션 반환
 }
