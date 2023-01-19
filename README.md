@@ -139,7 +139,63 @@
 
 ### 사용 기술
 
-### 디렉토리 구조 
+### 디렉토리 구조
+📦daemon
+ ┣ 📂ethereum
+ ┃ ┣ 📂config
+ ┃ ┃ ┣ 📜config.go
+ ┃ ┃ ┗ 📜config.toml
+ ┃ ┣ 📂logger
+ ┃ ┃ ┗ 📜logger.go
+ ┃ ┣ 📂logs
+ ┃ ┃ ┗ 📜go-loger_2023-01-15.log
+ ┃ ┣ 📂models
+ ┃ ┃ ┗ 📜model.go
+ ┃ ┣ 📂utils
+ ┃ ┃ ┗ 📜util.go
+ ┃ ┣ 📜.gitIgnore
+ ┃ ┣ 📜README.md
+ ┃ ┣ 📜go.mod
+ ┃ ┣ 📜go.sum
+ ┃ ┗ 📜main.go
+ ┣ 📂klaytn
+ ┃ ┣ 📂config
+ ┃ ┃ ┣ 📜config.go
+ ┃ ┃ ┗ 📜config.toml
+ ┃ ┣ 📂logger
+ ┃ ┃ ┗ 📜logger.go
+ ┃ ┣ 📂logs
+ ┃ ┃ ┗ 📜go-loger_2023-01-16.log
+ ┃ ┣ 📂models
+ ┃ ┃ ┗ 📜model.go
+ ┃ ┣ 📂utils
+ ┃ ┃ ┗ 📜util.go
+ ┃ ┣ 📜.gitIgnore
+ ┃ ┣ 📜README.md
+ ┃ ┣ 📜go.mod
+ ┃ ┣ 📜go.sum
+ ┃ ┗ 📜main.go
+ ┣ 📂logs
+ ┃ ┗ 📜go-loger_2023-01-15.log
+ ┗ 📂wemix
+ ┃ ┣ 📂config
+ ┃ ┃ ┣ 📜config.go
+ ┃ ┃ ┗ 📜config.toml
+ ┃ ┣ 📂logger
+ ┃ ┃ ┗ 📜logger.go
+ ┃ ┣ 📂logs
+ ┃ ┃ ┗ 📜go-loger_2023-01-16.log
+ ┃ ┣ 📂models
+ ┃ ┃ ┗ 📜model.go
+ ┃ ┣ 📂utils
+ ┃ ┃ ┗ 📜util.go
+ ┃ ┣ 📜.gitIgnore
+ ┃ ┣ 📜README.md
+ ┃ ┣ 📜go.mod
+ ┃ ┣ 📜go.sum
+ ┃ ┣ 📜main.go
+ ┃ ┗ 📜services
+
 📦multiWallet
  ┣ 📂build
  ┃ ┣ 📜IERC20.abi
@@ -206,62 +262,6 @@
  ┣ 📜go.sum
  ┗ 📜main.go
 
-📦daemon
- ┣ 📂ethereum
- ┃ ┣ 📂config
- ┃ ┃ ┣ 📜config.go
- ┃ ┃ ┗ 📜config.toml
- ┃ ┣ 📂logger
- ┃ ┃ ┗ 📜logger.go
- ┃ ┣ 📂logs
- ┃ ┃ ┗ 📜go-loger_2023-01-15.log
- ┃ ┣ 📂models
- ┃ ┃ ┗ 📜model.go
- ┃ ┣ 📂utils
- ┃ ┃ ┗ 📜util.go
- ┃ ┣ 📜.gitIgnore
- ┃ ┣ 📜README.md
- ┃ ┣ 📜go.mod
- ┃ ┣ 📜go.sum
- ┃ ┗ 📜main.go
- ┣ 📂klaytn
- ┃ ┣ 📂config
- ┃ ┃ ┣ 📜config.go
- ┃ ┃ ┗ 📜config.toml
- ┃ ┣ 📂logger
- ┃ ┃ ┗ 📜logger.go
- ┃ ┣ 📂logs
- ┃ ┃ ┗ 📜go-loger_2023-01-16.log
- ┃ ┣ 📂models
- ┃ ┃ ┗ 📜model.go
- ┃ ┣ 📂utils
- ┃ ┃ ┗ 📜util.go
- ┃ ┣ 📜.gitIgnore
- ┃ ┣ 📜README.md
- ┃ ┣ 📜go.mod
- ┃ ┣ 📜go.sum
- ┃ ┗ 📜main.go
- ┣ 📂logs
- ┃ ┗ 📜go-loger_2023-01-15.log
- ┗ 📂wemix
- ┃ ┣ 📂config
- ┃ ┃ ┣ 📜config.go
- ┃ ┃ ┗ 📜config.toml
- ┃ ┣ 📂logger
- ┃ ┃ ┗ 📜logger.go
- ┃ ┣ 📂logs
- ┃ ┃ ┗ 📜go-loger_2023-01-16.log
- ┃ ┣ 📂models
- ┃ ┃ ┗ 📜model.go
- ┃ ┣ 📂utils
- ┃ ┃ ┗ 📜util.go
- ┃ ┣ 📜.gitIgnore
- ┃ ┣ 📜README.md
- ┃ ┣ 📜go.mod
- ┃ ┣ 📜go.sum
- ┃ ┣ 📜main.go
- ┃ ┗ 📜services
-
 ### ERD
 - 데이터베이스 설계
     - 유저 Database
@@ -309,8 +309,17 @@
     - Deamon Server 3대
         
 ### API 명세서
+ <pre><code>
+ /auth/google/login [GET]           // @Description  구글 로그인
+ /wallet/trackAddress/{from} [GET]  // @Description  
+ /wallet/trackContract [POST]       // @Description  
+ /wallet/balance [GET]              // @Description  자산 정보 가져오기
+ /wallet/transfer [POST]            // @Description  코인,토큰 전송
+ </pre></code>
+ 
 
 # 피드백 개선
+
 
 # 주요 기능
 
