@@ -27,13 +27,12 @@
 
  저희 프로젝트는 기존 소셜과 동일하게 메일주소와 패스워드만 있으면 누구나 사용 가능한 유저 친화적인 지갑을 제공합니다.
  
-<aside>
+<pre><code>
 💡 **구글 로그인으로 유저 친화적인 지갑 서비스 구현**
-
 - 사용자는 니모닉 단어를 보관하지 않아도 됩니다.
 - 구글 로그인과 비밀번호를 이용하여 PrivateKey를 보관합니다.
 - 지갑주소의 트랜잭션 내용을 쉽게 트래킹 할 수 있습니다.
-</aside>
+</pre></code>
 
 ### 핵심 기능
 
@@ -53,7 +52,6 @@
 - 서비스에서 검증한 토큰은 컨트랙트를 추가 하지 않아도 확인이 가능합니다.
 - 코인/토큰의 거래내역을 쉽게 확인할 수 있습니다.
 - 네트워크를 전환하지 않아도 사용할 수 있습니다.
-
 
 ## 사용법
 - 구글 로그인, 지갑 생성
@@ -136,21 +134,173 @@
 ### 개발 환경
 - 언어
     - Go
+- Database
+    - mongodb
 
 ### 사용 기술
 
-
 ### 디렉토리 구조 
+📦multiWallet
+ ┣ 📂build
+ ┃ ┣ 📜IERC20.abi
+ ┃ ┣ 📜IERC20.bin
+ ┃ ┣ 📜MultiSigWallet.abi
+ ┃ ┣ 📜MultiSigWallet.bin
+ ┃ ┣ 📜WALToken.abi
+ ┃ ┗ 📜WALToken.bin
+ ┣ 📂config
+ ┃ ┣ 📜config.go
+ ┃ ┗ 📜config.toml
+ ┣ 📂contracts
+ ┃ ┣ 📂build
+ ┃ ┃ ┣ 📜MultiSigWallet.abi
+ ┃ ┃ ┗ 📜MultiSigWallet.bin
+ ┃ ┣ 📂multisigwallet
+ ┃ ┃ ┣ 📜MultisigWallet.go
+ ┃ ┃ ┗ 📜MultisigWallet.sol
+ ┃ ┣ 📜WALToken.go
+ ┃ ┗ 📜WALToken.sol
+ ┣ 📂controllers
+ ┃ ┣ 📜controller.go
+ ┃ ┣ 📜googlelogin.controller.go
+ ┃ ┣ 📜multisigwallet.controller.go
+ ┃ ┣ 📜user.controller.go
+ ┃ ┗ 📜wallet.controller.go
+ ┣ 📂docs
+ ┃ ┣ 📜docs.go
+ ┃ ┗ 📜swagger.yaml
+ ┣ 📂logger
+ ┃ ┗ 📜logger.go
+ ┣ 📂logs
+ ┃ ┣ 📜go-loger_2023-01-15.log
+ ┃ ┣ 📜go-loger_2023-01-17.log
+ ┃ ┣ 📜go-loger_2023-01-18.log
+ ┃ ┗ 📜go-loger_2023-01-19.log
+ ┣ 📂models
+ ┃ ┣ 📜model.go
+ ┃ ┣ 📜multisigwallet.go
+ ┃ ┣ 📜user.go
+ ┃ ┗ 📜wallet.go
+ ┣ 📂route
+ ┃ ┗ 📜route.go
+ ┣ 📂services
+ ┃ ┣ 📜multisigWallet.service.go
+ ┃ ┣ 📜multisigWallet.serviece.impl.go
+ ┃ ┣ 📜user.service.go
+ ┃ ┣ 📜user.service.impl.go
+ ┃ ┣ 📜wallet.service.go
+ ┃ ┗ 📜wallet.service.impl.go
+ ┣ 📂static
+ ┃ ┣ 📂css
+ ┃ ┃ ┣ 📜register.css
+ ┃ ┃ ┗ 📜style.css
+ ┃ ┗ 📂javascript
+ ┃ ┃ ┗ 📜register.js
+ ┣ 📂templates
+ ┃ ┣ 📜index.html
+ ┃ ┣ 📜multisigwallet.html
+ ┃ ┗ 📜register.html
+ ┣ 📂utils
+ ┃ ┗ 📜wallet.func.go
+ ┣ 📜go.mod
+ ┣ 📜go.sum
+ ┗ 📜main.go
 
+📦daemon
+ ┣ 📂ethereum
+ ┃ ┣ 📂config
+ ┃ ┃ ┣ 📜config.go
+ ┃ ┃ ┗ 📜config.toml
+ ┃ ┣ 📂logger
+ ┃ ┃ ┗ 📜logger.go
+ ┃ ┣ 📂logs
+ ┃ ┃ ┗ 📜go-loger_2023-01-15.log
+ ┃ ┣ 📂models
+ ┃ ┃ ┗ 📜model.go
+ ┃ ┣ 📂utils
+ ┃ ┃ ┗ 📜util.go
+ ┃ ┣ 📜.gitIgnore
+ ┃ ┣ 📜README.md
+ ┃ ┣ 📜go.mod
+ ┃ ┣ 📜go.sum
+ ┃ ┗ 📜main.go
+ ┣ 📂klaytn
+ ┃ ┣ 📂config
+ ┃ ┃ ┣ 📜config.go
+ ┃ ┃ ┗ 📜config.toml
+ ┃ ┣ 📂logger
+ ┃ ┃ ┗ 📜logger.go
+ ┃ ┣ 📂logs
+ ┃ ┃ ┗ 📜go-loger_2023-01-16.log
+ ┃ ┣ 📂models
+ ┃ ┃ ┗ 📜model.go
+ ┃ ┣ 📂utils
+ ┃ ┃ ┗ 📜util.go
+ ┃ ┣ 📜.gitIgnore
+ ┃ ┣ 📜README.md
+ ┃ ┣ 📜go.mod
+ ┃ ┣ 📜go.sum
+ ┃ ┗ 📜main.go
+ ┣ 📂logs
+ ┃ ┗ 📜go-loger_2023-01-15.log
+ ┗ 📂wemix
+ ┃ ┣ 📂config
+ ┃ ┃ ┣ 📜config.go
+ ┃ ┃ ┗ 📜config.toml
+ ┃ ┣ 📂logger
+ ┃ ┃ ┗ 📜logger.go
+ ┃ ┣ 📂logs
+ ┃ ┃ ┗ 📜go-loger_2023-01-16.log
+ ┃ ┣ 📂models
+ ┃ ┃ ┗ 📜model.go
+ ┃ ┣ 📂utils
+ ┃ ┃ ┗ 📜util.go
+ ┃ ┣ 📜.gitIgnore
+ ┃ ┣ 📜README.md
+ ┃ ┣ 📜go.mod
+ ┃ ┣ 📜go.sum
+ ┃ ┣ 📜main.go
+ ┃ ┗ 📜services
 
 ### ERD
 - 데이터베이스 설계
-    - MEMBER
-    - WALLET
-    - BLOCK
+    - 유저 Database
+        - MEMBER
+        <pre><code>
+        type User struct {
+         ObjectID primitive.ObjectID `json:"_id,omitempty" bson:"_id,omitempty"` //기본키
+         Email    string             `json:"email" bson:"email"`                 //SNS ID
+         Address  string             `json:"address" bson:"address"`             //지갑주소
+        }
+        </pre></code>
+        - WALLET
+    - 데몬 Database
         - WemixBlock
         - KlaytnBlock
         - EthereumBlock
+        <pre><code>
+        type Block struct {
+         BlockHash    string        `bson:"blockHash"`
+         BlockNumber  uint64        `bson:"blockNumber"`
+         GasLimit     uint64        `bson:"gasLimit"`
+         GasUsed      uint64        `bson:"gasUsed"`
+         Time         uint64        `bson:"timestamp"`
+         Nonce        uint64        `bson:"nonce"`
+         Transactions []Transaction `bson:"transactions"`
+        }
+
+        type Transaction struct {
+         TxHash      string `bson:"hash"`
+         From        string `bson:"from"`
+         To          string `bson:"to"` 
+         Nonce       uint64 `bson:"nonce"`
+         GasPrice    uint64 `bson:"gasPrice"`
+         GasLimit    uint64 `bson:"gasLimit"`
+         Amount      uint64 `bson:"amount"`
+         BlockHash   string `bson:"blockHash"`
+         BlockNumber uint64 `bson:"blockNumber"`
+        }
+        </pre></code>
         
 ### 서버 아키텍처 
 - 서버구성
