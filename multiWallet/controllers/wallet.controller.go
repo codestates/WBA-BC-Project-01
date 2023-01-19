@@ -54,7 +54,7 @@ func (wc *WalletController) TransferTokens(ctx *gin.Context) {
 		if params.TransactionInfo != "" {
 			ctx.JSON(http.StatusOK, gin.H{"tx sent :": params.TransactionInfo})
 		} else {
-			ctx.JSON(http.StatusBadRequest, "address, value를 다시 입력해주세요")
+			ctx.JSON(http.StatusBadRequest, "Network, FromAddress, ToAddress, SendValue, UserMail, UserPWD 또는 TokenContract를 다시 입력해주세요")
 		}
 	}
 }

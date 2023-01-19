@@ -110,57 +110,71 @@ func (w *WalletServiceImplement) NewWalletWithKeystore(privateKey *ecdsa.Private
 	return address, privateKey, walletDTO.Email
 }
 
-func (w *WalletServiceImplement) TransferTokens(mod models.TransferData) models.TransferData {
+// 이메일과 패스워드 받아서 개인키를 반환합니다.
+func (w *WalletServiceImplement) GetPrivateKey(email string, password string) (string, error) {
+	var keyjson *models.Keystores
+	filter := bson.M{"email": email}
+	if err := w.wc.FindOne(w.ctx, filter).Decode(&keyjson); err != nil {
+		fmt.Println(err)
+		return "", err
+	}
 
-	fmt.Println("[service.TransferCoin]")
+	keyjsonToByte, err := json.Marshal(keyjson.KeyStore)
+	if err != nil {
+		return "", err
+	}
+	key, err := keystore.DecryptKey(keyjsonToByte, string(password))
+	if err != nil {
+		return "", err
+	}
+	//개인키 : hex.EncodeToString(key.PrivateKey.D.Bytes()))
+	return hex.EncodeToString(key.PrivateKey.D.Bytes()), nil
+}
 
-	// //테스트용 주소
-	// mod.Network = "WEMIX"
-	// mod.FromAddress = "0x314613c08Cb38e3d782688e86f61a563D8959574"
-	// mod.ToAddress = "0x3baac3212c76Cdd3189E3d08D3323C3200B22b9d"
-	// mod.TokenContract = "0xF01E78a83F3860433B4ef1b1A7f80B82a269A6fd"
-	// mod.SendValue = 5
-
-	fmt.Println("mod.Network : ", mod.Network)
-	fmt.Println("mod.FromAddress : ", mod.FromAddress)
-	fmt.Println("mod.ToAddress : ", mod.ToAddress)
-	fmt.Println("mod.TokenContract : ", mod.TokenContract)
-	fmt.Println("mod.SendValue : ", mod.SendValue)
-
+func (w *WalletServiceImplement) GetEthClient(networkType string) *ethclient.Client {
 	var client *ethclient.Client
-	if mod.Network == "WEMIX" {
+	if networkType == "WEMIX" {
 		client = w.mod.WemixClient
-	} else if mod.Network == "ETH" {
+	} else if networkType == "ETH" {
 		client = w.mod.EthClient
-	} else if mod.Network == "KLAY" {
+	} else if networkType == "KLAY" {
 		client = w.mod.KlaytnClient
 	} else {
 		panic("Network err")
 	}
+	return client
+}
 
-	//작업중
-	//const decimal = 10 ^ 18
-	value := int64(mod.SendValue * 1000000000000000000)
-	//value := int64(mod.SendValue * decimal)
-	fmt.Println("value : ", value)
-	//value := big.NewInt(1000000000000000000) // in wei (1 eth)
+func (w *WalletServiceImplement) TransferTokens(mod models.TransferData) models.TransferData {
+
+	logger.Info("[service.TransferCoin]")
+
+	client := w.GetEthClient(mod.Network)
+	if client == nil {
+		return mod
+	}
 
 	fromAddress := common.HexToAddress(mod.FromAddress)
 	toAddress := common.HexToAddress(mod.ToAddress)
-
-	sendValue := big.NewInt(value)
+	sendValue := GetFloatValue(mod.SendValue)
 
 	var data []byte
 	//토큰의 경우 data에 Set 한다.
 	if mod.TokenContract != "" {
+
 		tokenAddress := common.HexToAddress(mod.TokenContract)
 		data = SetContractData(toAddress, sendValue)
 		sendValue = big.NewInt(0) //토큰 전송의 경우, 컨트랙트에 갯수 설정
 		toAddress = tokenAddress  //받는 사람에게 토큰 주소로 변경
 	}
 
+	privateKey, err := w.GetPrivateKey(mod.UserMail, mod.UserPWD)
+	if err != nil {
+		panic("privateKey err")
+	}
+
 	//트랜잭션 실행
-	tx := StartTransaction(client, fromAddress, toAddress, sendValue, data)
+	tx := StartTransaction(client, fromAddress, toAddress, sendValue, data, privateKey)
 	mod.TransactionInfo = tx
 	return mod
 }
@@ -188,38 +202,38 @@ func SetContractData(toAddress common.Address, sendValue *big.Int) []byte {
 	return pdata
 }
 
-func StartTransaction(client *ethclient.Client, fromAddress common.Address, toAddress common.Address, sendValue *big.Int, data []byte) string {
+func StartTransaction(client *ethclient.Client, fromAddress common.Address, toAddress common.Address, sendValue *big.Int, data []byte, privateKey string) string {
 
 	//프라이베잇 키를 가져와야한다.
-	fromPrivateKey, err := crypto.HexToECDSA("-")
+	fromPrivateKey, err := crypto.HexToECDSA(privateKey)
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err)
 	}
 
 	// 현재 계정의 nonce를 가져옴. 다음 트랜잭션에서 사용할 nonce
 	nonce, err := client.PendingNonceAt(context.Background(), fromAddress)
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err)
 	}
 
 	// 전송할 양, gasLimit, gasPrice 설정. 추천되는 gasPrice를 가져옴
-	gasLimit := uint64(41000)
+	gasLimit := uint64(61000)
 	gasPrice, err := client.SuggestGasPrice(context.Background())
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err)
 	}
 
 	// 트랜잭션 생성
 	tx := types.NewTransaction(nonce, toAddress, sendValue, gasLimit, gasPrice, data)
 	chainID, err := client.NetworkID(context.Background())
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err)
 	}
 
 	// 트랜잭션 서명
 	signedTx, err := types.SignTx(tx, types.NewEIP155Signer(chainID), fromPrivateKey)
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err)
 	}
 
 	// RLP 인코딩 전 트랜잭션 묶음. 현재는 1개의 트랜잭션
@@ -229,7 +243,7 @@ func StartTransaction(client *ethclient.Client, fromAddress common.Address, toAd
 	rawTxHex := hex.EncodeToString(rawTxBytes)
 	rTxBytes, err := hex.DecodeString(rawTxHex)
 	if err != nil {
-		fmt.Println(err.Error())
+		logger.Error(err)
 	}
 
 	// RLP 디코딩
@@ -237,11 +251,10 @@ func StartTransaction(client *ethclient.Client, fromAddress common.Address, toAd
 	// 트랜잭션 전송
 	err = client.SendTransaction(context.Background(), tx)
 	if err != nil {
-		fmt.Println(err)
+		logger.Error(err)
 	}
 	//출력된 tx.hash를 익스플로러에 조회 가능
-	//예) 0x4788935cfa4a0f23807ba7d7b17a6304cc52795616889fdb9ebdb4498adf4a35
-	fmt.Printf("tx sent: %s\n", tx.Hash().Hex())
+	logger.Info("tx sent: %s\n", tx.Hash().Hex())
 	return tx.Hash().Hex()
 }
 
@@ -260,6 +273,22 @@ func (w *WalletServiceImplement) BalanceTokens(address string) ([]models.TokenIn
 	tokenInfos = SetTokenInfo(KlaySymbol, address, w.mod.KlaytnClient, w.mod.KlaytnTokenAddress, tokenInfos)
 
 	return coinInfos, tokenInfos
+}
+
+func GetFloatValue(val float64) *big.Int {
+
+	bigval := new(big.Float)
+	bigval.SetFloat64(val)
+
+	coin := new(big.Float)
+	coin.SetInt(big.NewInt(1000000000000000000))
+
+	bigval.Mul(bigval, coin)
+
+	result := new(big.Int)
+	bigval.Int(result) // store converted number in result
+
+	return result
 }
 
 func GetEthValue(balance *big.Int) *big.Float {
