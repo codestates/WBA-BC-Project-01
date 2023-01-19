@@ -9,14 +9,16 @@ import (
 )
 
 type UserServiceImplement struct {
-	usercollection *mongo.Collection
-	ctx            context.Context
+	usercollection        *mongo.Collection
+	multiwalletcollection *mongo.Collection
+	ctx                   context.Context
 }
 
-func NewUserService(usercollection *mongo.Collection, ctx context.Context) (UserService, error) {
+func NewUserService(usercollection *mongo.Collection, mc *mongo.Collection, ctx context.Context) (UserService, error) {
 	return &UserServiceImplement{
-		usercollection: usercollection,
-		ctx:            ctx,
+		usercollection:        usercollection,
+		multiwalletcollection: mc,
+		ctx:                   ctx,
 	}, nil
 }
 
@@ -36,4 +38,13 @@ func (u *UserServiceImplement) GetAddress(email string) (string, error) {
 		return "", err
 	}
 	return user.Address, nil
+}
+
+func (u *UserServiceImplement) IsExistMultiWallet(email string) (*models.MultiSigWallet, error) {
+	var multiwallet *models.MultiSigWallet
+	err := u.multiwalletcollection.FindOne(u.ctx, bson.M{"email": email}).Decode(&multiwallet)
+	if err != nil {
+		return nil, err
+	}
+	return multiwallet, nil
 }
