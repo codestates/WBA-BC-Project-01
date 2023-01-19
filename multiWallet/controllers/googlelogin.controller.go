@@ -13,6 +13,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gin-contrib/sessions"
+
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -75,6 +77,13 @@ func (lc *GoogleLoginController) GoogleAuthCallback(ctx *gin.Context) {
 	}
 	// 기존 사용자인지 , 회원가입(지갑생성) 이 필요한 사용자인지 검사
 	user, err := lc.UserService.CheckUser(email)
+
+	//세션에 이메일 저장
+	session := sessions.Default(ctx)
+	session.Set("id", "0000")
+	session.Set("email", email)
+	session.Save()
+
 	if err != nil {
 		//회원가입이 필요한 사용자
 		ctx.HTML(http.StatusOK, "register.html", gin.H{"email": email})
