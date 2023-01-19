@@ -75,7 +75,7 @@ func init() {
 	} else if multisigcol = mod.Client.Database(cf.DB.MultiWalletDatabase).Collection(cf.DB.MultiSigWalletCollection); err != nil {
 		panic(err)
 		/* 서비스 초기화 */
-	} else if us, err = services.NewUserService(userc, context.TODO()); err != nil {
+	} else if us, err = services.NewUserService(userc, multisigcol, context.TODO()); err != nil {
 		panic(err)
 	} else if ws, err = services.NewWalletService(walletc, userc, wemixc, klaytnc, ethereumc, context.TODO(), mod); err != nil {
 		panic(err)

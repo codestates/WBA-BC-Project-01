@@ -90,7 +90,13 @@ func (lc *GoogleLoginController) GoogleAuthCallback(ctx *gin.Context) {
 		return
 	}
 	// 기존 사용자
-	ctx.HTML(http.StatusOK, "index.html", gin.H{"isLogined": true, "email": user.Email, "address": user.Address})
+	isExistMultiWallet, err := lc.UserService.IsExistMultiWallet(email)
+	if err != nil {
+		ctx.HTML(http.StatusOK, "index.html", gin.H{"isLogined": true, "email": user.Email, "address": user.Address, "isMultisigExist": false})
+		return
+	}
+
+	ctx.HTML(http.StatusOK, "index.html", gin.H{"isLogined": true, "email": user.Email, "address": user.Address, "isMultisigExist": isExistMultiWallet.Address, "walletName": isExistMultiWallet.WalletName})
 }
 
 func (lc *GoogleLoginController) getGoogleUserInfo(code string, ctx *gin.Context) (string, error) {

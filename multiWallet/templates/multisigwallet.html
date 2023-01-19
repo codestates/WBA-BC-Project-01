@@ -7,6 +7,8 @@
         <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
       </head>
 <body>
+  <div style="padding: 20%;">
+  {{ .email }} 님의 현재 잔액입니다. <br>
   {{ range .coinInfo }}
           코인 : {{ .SymbolName }}  잔액 : {{ .BalanceOf }}  <br>
   {{ end }}
@@ -14,18 +16,22 @@
   {{ range .tokenInfo }}
           토큰 : {{ .SymbolName }} 잔액 : {{ .BalanceOf }} <br>
   {{ end }}
-	<form method="post" action="/multisigwallet/" onsubmit="return check()">
+	<form method="post" action="/multisigwallet/" onsubmit="return check()" style="margin-top: 35px;">
         <input type="hidden" name="email" id="email" value="{{ .email }}">
         <input type="hidden" name="confirm" id="confirm">
         <div class="form-floating mb-3">
-            <input type="password" class="form-control" name="password" id="password" placeholder="Password" maxlength="20" required>
-            <label for="floatingInput">Password</label>
+            <input type="password" class="form-control" name="password" id="password" maxlength="20" required>
+            <label for="floatingInput">지갑 비밀번호를 입력하세요</label>
         </div>
-        <div class="form-floating">
+        <div class="form-floating mb-3">
+          <input type="text" class="form-control" name="walletname"  maxlength="20" required>
+          <label for="floatingInput">지갑 별칭을 입력하세요</label>
+      </div>
+        <div class="form-floating mb-3">
           <input type="text" id="owner1" name="onwer1" class="form-control is-invalid" required>
           <label for="floatingPassword">지갑을 공동관리할 사용자의 주소를 입력하세요</label>
         </div>
-        <div class="form-floating">
+        <div class="form-floating mb-3">
             <input type="text" id="owner2" name="onwer2" class="form-control is-invalid" required>
             <label for="floatingPassword">지갑을 공동관리할 사용자의 주소를 입력하세요</label>
         </div>
@@ -38,6 +44,7 @@
             <input type="submit" value="지갑 생성" style="margin: 0 auto;" class="btn btn-dark">
         </div>
     </form>
+  </div>
 </body>
 </html>
 

@@ -123,8 +123,12 @@ func (p *Router) Idx() *gin.Engine {
 	/* 다중서명지갑 라우팅 */
 	multisigwallet := e.Group("/multisigwallet", Authentication())
 	{
-		multisigwallet.GET("/", p.mc.CreateMultiSigWalletPage)
-		multisigwallet.POST("/", p.mc.CreateMultiSigWallet)
+		multisigwallet.GET("/", p.mc.CreateMultiSigWalletPage)           //지갑생성페이지
+		multisigwallet.POST("/", p.mc.CreateMultiSigWallet)              //지갑생성
+		multisigwallet.POST("/submit", p.mc.SubmitTransaction)           //Tx 실행
+		multisigwallet.POST("/confirm", p.mc.ConfirmTransaction)         //Tx 컨펌
+		multisigwallet.GET("/txCount/:wallet", p.mc.GetTransactionCount) //Tx 개수
+		multisigwallet.GET("/onwers/:wallet", p.mc.GetOwners)            //소유자들 반환
 	}
 	return e
 }
