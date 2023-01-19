@@ -110,27 +110,6 @@ func (w *WalletServiceImplement) NewWalletWithKeystore(privateKey *ecdsa.Private
 	return address, privateKey, walletDTO.Email
 }
 
-// 이메일과 패스워드 받아서 개인키를 반환합니다.
-func (w *WalletServiceImplement) GetPrivateKey(email string, password string) (string, error) {
-	var keyjson *models.Keystores
-	filter := bson.M{"email": email}
-	if err := w.wc.FindOne(w.ctx, filter).Decode(&keyjson); err != nil {
-		fmt.Println(err)
-		return "", err
-	}
-
-	keyjsonToByte, err := json.Marshal(keyjson.KeyStore)
-	if err != nil {
-		return "", err
-	}
-	key, err := keystore.DecryptKey(keyjsonToByte, string(password))
-	if err != nil {
-		return "", err
-	}
-	//개인키 : hex.EncodeToString(key.PrivateKey.D.Bytes()))
-	return hex.EncodeToString(key.PrivateKey.D.Bytes()), nil
-}
-
 func (w *WalletServiceImplement) TransferTokens(mod models.TransferData) models.TransferData {
 
 	fmt.Println("[service.TransferCoin]")
