@@ -54,34 +54,26 @@ func (wc *WalletController) TransferTokens(ctx *gin.Context) {
 		if params.TransactionInfo != "" {
 			ctx.JSON(http.StatusOK, gin.H{"tx sent :": params.TransactionInfo})
 		} else {
-			ctx.JSON(http.StatusBadRequest, "Network, FromAddress, ToAddress, SendValue, UserMail, UserPWD 또는 TokenContract를 다시 입력해주세요")
+			ctx.JSON(http.StatusBadRequest, "address, value를 다시 입력해주세요")
 		}
 	}
 }
 
+// 특정 주소로 트래킹
 func (wc *WalletController) TrackByAddress(ctx *gin.Context) {
 
-	// UI에 따라 string 어떻게 가져올지 구현방법 변경 필요
-	//r, _ := models.NewModel(cf.DB.Host)
 	from := ctx.Param("from")
 	scope := wc.walletService.TrackByAddress(from)
 
-	// for _, scp := range scope {
-	// 	txHash := scp.TxHash
-	// 	blockNum := scp.BlockNumber
-	// 	addressFrom := scp.From
-	// 	addressTo := scp.To
-	// 	amount := scp.Amount
-	// }
-
 	ctx.JSON(http.StatusOK, scope)
-
 }
 
-func (wc WalletController) TrackByContract(ctx *gin.Context) {
+// 컨트랙트 주소로 트래킹
+func (wc *WalletController) TrackByContract(ctx *gin.Context) {
 
-	to := ctx.PostForm("to")
+	to := ctx.Param("to")
 	scope := wc.walletService.TrackByContract(to)
 
 	ctx.JSON(http.StatusOK, scope)
+
 }

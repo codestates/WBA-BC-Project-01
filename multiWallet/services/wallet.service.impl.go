@@ -348,39 +348,62 @@ func BalanceToken(client *ethclient.Client, ownerAddress string, contranct strin
 	return tokenInfo, err
 }
 
-func (w *WalletServiceImplement) TrackByAddress(from string) []models.Transaction {
+func (w *WalletServiceImplement) TrackByAddress(from string) models.TxInfo {
 	filter := bson.M{"from": from}
 	opts := options.Find().SetSort(bson.D{{Key: "blockNumber", Value: -1}})
-	cursor, err := w.wemixc.Find(context.TODO(), filter, opts)
+	wemixcursor, err := w.wemixc.Find(context.TODO(), filter, opts)
 	if err != nil {
 		log.Fatal(err)
 	}
-	var transactions []models.Transaction
 
-	if err = cursor.All(context.TODO(), &transactions); err != nil {
+	var totalTx models.TxInfo
+	if err = wemixcursor.All(context.TODO(), &totalTx.WemixTx); err != nil {
+		panic(err)
+	}
+	klaytncursor, err := w.klaytnc.Find(context.TODO(), filter, opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err = klaytncursor.All(context.TODO(), &totalTx.KlaytnTx); err != nil {
 		panic(err)
 	}
 
-	return transactions
+	ethcursor, err := w.ethc.Find(context.TODO(), filter, opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err = ethcursor.All(context.TODO(), &totalTx.EthTx); err != nil {
+		panic(err)
+	}
+	return totalTx
 }
-func (w *WalletServiceImplement) TrackByContract(to string) []models.Transaction {
+func (w *WalletServiceImplement) TrackByContract(to string) models.TxInfo {
 	filter := bson.M{"to": to}
-	opts := options.Find().SetSort(bson.D{{Key: "blocknumber", Value: 1}})
-	cursor, err := w.wemixc.Find(context.TODO(), filter, opts)
+	opts := options.Find().SetSort(bson.D{{Key: "blockNumber", Value: -1}})
+	wemixcursor, err := w.wemixc.Find(context.TODO(), filter, opts)
 	if err != nil {
 		log.Fatal(err)
 	}
-	var transactions []models.Transaction
-	if err = cursor.All(context.TODO(), &transactions); err != nil {
+
+	var totalTx models.TxInfo
+	if err = wemixcursor.All(context.TODO(), &totalTx.WemixTx); err != nil {
 		panic(err)
 	}
-	for _, result := range transactions {
-		cursor.Decode(&result)
-		output, err := json.MarshalIndent(result, "", "   ")
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println(output)
+	klaytncursor, err := w.klaytnc.Find(context.TODO(), filter, opts)
+	if err != nil {
+		log.Fatal(err)
 	}
-	return transactions
+	if err = klaytncursor.All(context.TODO(), &totalTx.KlaytnTx); err != nil {
+		panic(err)
+	}
+
+	ethcursor, err := w.ethc.Find(context.TODO(), filter, opts)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err = ethcursor.All(context.TODO(), &totalTx.EthTx); err != nil {
+		panic(err)
+	}
+	return totalTx
+
 }

@@ -113,7 +113,7 @@ func (p *Router) Idx() *gin.Engine {
 	wallet := e.Group("/wallet", liteAuth())
 	{
 		wallet.GET("/trackAddress/:from", p.wc.TrackByAddress)
-		wallet.POST("/trackContract", p.wc.TrackByContract)
+		wallet.GET("/trackContract/:to", p.wc.TrackByContract)
 		wallet.POST("/mnemonics", p.wc.NewMnemonic)
 		wallet.POST("/", p.wc.NewWallet)
 		wallet.GET("/balance", p.wc.BalanceTokens)
