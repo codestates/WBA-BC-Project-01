@@ -311,8 +311,8 @@
 ### API 명세서
  <pre><code>
  /auth/google/login [GET]           // @Description  구글 로그인
- /wallet/trackAddress/{from} [GET]  // @Description  
- /wallet/trackContract [POST]       // @Description  
+ /wallet/trackAddress/{from} [GET]  // @Description  특정 주소 발생한 트랜잭션 가져오기
+ /wallet/trackContract [POST]       // @Description  코인  가져오기
  /wallet/balance [GET]              // @Description  자산 정보 가져오기
  /wallet/transfer [POST]            // @Description  코인,토큰 전송
  </pre></code>
@@ -322,4 +322,3 @@
 
 
 # 주요 기능
-
