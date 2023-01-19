@@ -5,7 +5,10 @@ import (
 	"WBA/docs"
 	"WBA/logger"
 	"fmt"
+	"net/http"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	swgFiles "github.com/swaggo/files"
 	ginSwg "github.com/swaggo/gin-swagger"
@@ -15,11 +18,12 @@ type Router struct {
 	cc *controllers.Controller
 	lc *controllers.GoogleLoginController
 	wc *controllers.WalletController
+	mc *controllers.MultisigWalletContrller
 }
 
 /* 주문자, 피주문자 컨트롤러 할당 */
-func NewRouter(ctl *controllers.Controller, loginCtl *controllers.GoogleLoginController, walletCtl *controllers.WalletController) (*Router, error) {
-	r := &Router{cc: ctl, lc: loginCtl, wc: walletCtl}
+func NewRouter(ctl *controllers.Controller, loginCtl *controllers.GoogleLoginController, walletCtl *controllers.WalletController, multisigCtl *controllers.MultisigWalletContrller) (*Router, error) {
+	r := &Router{cc: ctl, lc: loginCtl, wc: walletCtl, mc: multisigCtl}
 
 	return r, nil
 }
@@ -58,6 +62,20 @@ func liteAuth() gin.HandlerFunc {
 	}
 }
 
+// 세션 관리
+func Authentication() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		session := sessions.Default(c)
+		sessionID := session.Get("id")
+		if sessionID == nil {
+			c.JSON(http.StatusNotFound, gin.H{
+				"message": "unauthorized",
+			})
+			c.Abort()
+		}
+	}
+}
+
 func (p *Router) Idx() *gin.Engine {
 	gin.SetMode(gin.DebugMode)
 
@@ -72,6 +90,8 @@ func (p *Router) Idx() *gin.Engine {
 
 	logger.Info("start server")
 	e.GET("/health")
+	store := cookie.NewStore([]byte("secret"))
+	e.Use(sessions.Sessions("mySession", store))
 
 	e.GET("/swagger/:any", ginSwg.WrapHandler(swgFiles.Handler))
 	docs.SwaggerInfo.Host = "localhost:8080" //swagger 정보 등록
@@ -100,6 +120,11 @@ func (p *Router) Idx() *gin.Engine {
 		wallet.POST("/transfer", p.wc.TransferTokens)
 		// wallet.POST("/keystores", p.wc.NewWalletWithKeystore)
 	}
-
+	/* 다중서명지갑 라우팅 */
+	multisigwallet := e.Group("/multisigwallet", Authentication())
+	{
+		multisigwallet.GET("/", p.mc.CreateMultiSigWalletPage)
+		multisigwallet.POST("/", p.mc.CreateMultiSigWallet)
+	}
 	return e
 }

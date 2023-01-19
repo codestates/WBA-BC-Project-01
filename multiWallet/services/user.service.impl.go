@@ -29,3 +29,11 @@ func (u *UserServiceImplement) CheckUser(email string) (*models.User, error) {
 
 	return user, nil
 }
+
+func (u *UserServiceImplement) GetAddress(email string) (string, error) {
+	var user *models.User
+	if err := u.usercollection.FindOne(u.ctx, bson.M{"email": email}).Decode(&user); err != nil {
+		return "", err
+	}
+	return user.Address, nil
+}
