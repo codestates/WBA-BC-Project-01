@@ -9,8 +9,6 @@
  - [ERD](#erd)
  - [서버 아키텍처](#서버-아키텍처) 
  - [Api 명세서](#api-명세서)
- - [피드백 개선](#피드백-개선)
- - [주요 기능](#주요-기능)
     - [데몬 서버](#데몬서버)
         - [이더리움 데몬](#이더리움)
         - [클레이튼 데몬](#클레이튼)
@@ -136,10 +134,15 @@
     - Go
 - Database
     - mongodb
-
+- API Test
+    - Postman
+- 협업툴
+    - Git
+    - Discord
 ### 사용 기술
 
 ### 디렉토리 구조
+```
 📦daemon
  ┣ 📂ethereum
  ┃ ┣ 📂config
@@ -228,10 +231,6 @@
  ┣ 📂logger
  ┃ ┗ 📜logger.go
  ┣ 📂logs
- ┃ ┣ 📜go-loger_2023-01-15.log
- ┃ ┣ 📜go-loger_2023-01-17.log
- ┃ ┣ 📜go-loger_2023-01-18.log
- ┃ ┗ 📜go-loger_2023-01-19.log
  ┣ 📂models
  ┃ ┣ 📜model.go
  ┃ ┣ 📜multisigwallet.go
@@ -261,6 +260,7 @@
  ┣ 📜go.mod
  ┣ 📜go.sum
  ┗ 📜main.go
+```
 
 ### ERD
 - 데이터베이스 설계
@@ -308,17 +308,32 @@
     - DataBase Server 1대
     - Deamon Server 3대
         
+<br>
+
 ### API 명세서
- <pre><code>
- /auth/google/login [GET]           // @Description  구글 로그인
- /wallet/trackAddress/{from} [GET]  // @Description  특정 주소 발생한 트랜잭션 가져오기
- /wallet/trackContract [POST]       // @Description  코인  가져오기
- /wallet/balance [GET]              // @Description  자산 정보 가져오기
- /wallet/transfer [POST]            // @Description  코인,토큰 전송
- </pre></code>
- 
+---
+로그인 관련
+```
+/auth/google/login                  [GET]        // @Description  구글 로그인
+/auth/google/callback               [GET]        // @Description  구글 로그인 콜백 
+```
 
-# 피드백 개선
+지갑 관련
+```
+/wallet/trackAddress/{from}         [GET]        // @Description  특정 주소 발생한 트랜잭션 가져오기
+/wallet/trackContract               [POST]       // @Description  코인  가져오기
+/wallet/mnemonics                   [POST]       // @Description  니모닉 생성
+/wallet/                            [POST]       // @Description  지갑 생성
+/wallet/balance                     [GET]        // @Description  자산 정보 가져오기
+/wallet/transfer                    [POST]       // @Description  코인,토큰 전송
+``` 
 
-
-# 주요 기능
+다중서명지갑 관련
+```
+/multisigwallet/                    [GET]         // @Description 다중서명지갑 생성 페이지 반환
+/multisigwallet/                    [POST]         // @Description 다중서명지갑생성
+/multisigwallet/submit              [POST]         // @Description 다중서명 계약 제출
+/multisigwallet/confirm             [POST]         // @Description 계약 컨펌
+/multisigwallet/txCount/{wallet}    [GET]         // @Description 계약 개수 가져오기
+/multisigwallet/owners/{wallet}     [GET]         // @Description 지갑 소유자 목록 반환
+```
