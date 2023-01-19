@@ -212,7 +212,7 @@ func SetContractData(toAddress common.Address, sendValue *big.Int) []byte {
 func StartTransaction(client *ethclient.Client, fromAddress common.Address, toAddress common.Address, sendValue *big.Int, data []byte) string {
 
 	//프라이베잇 키를 가져와야한다.
-	fromPrivateKey, err := crypto.HexToECDSA("ca0b20afb40be6d708ae6d9815f409229d3f3fc11719f5608d119306e491bf07")
+	fromPrivateKey, err := crypto.HexToECDSA("-")
 	if err != nil {
 		fmt.Println(err)
 	}
