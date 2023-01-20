@@ -1,34 +1,50 @@
 package services
 
 import (
-	"context"
-
 	"WBA/models"
+	"context"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type UserServiceImplement struct {
-	usercollection *mongo.Collection
-	ctx            context.Context
+	usercollection        *mongo.Collection
+	multiwalletcollection *mongo.Collection
+	ctx                   context.Context
 }
 
-func NewUserService(usercollection *mongo.Collection, ctx context.Context) UserService {
+func NewUserService(usercollection *mongo.Collection, mc *mongo.Collection, ctx context.Context) (UserService, error) {
 	return &UserServiceImplement{
-		usercollection: usercollection,
-		ctx:            ctx,
-	}
+		usercollection:        usercollection,
+		multiwalletcollection: mc,
+		ctx:                   ctx,
+	}, nil
 }
 
-func (u *UserServiceImplement) CreateUser(user *models.User) error {
-	_, err := u.usercollection.InsertOne(u.ctx, user)
-	return err
-}
-
-func (u *UserServiceImplement) GetUser(id string) (*models.User, error) {
+func (u *UserServiceImplement) CheckUser(email string) (*models.User, error) {
 	var user *models.User
-	query := bson.D{bson.E{Key: "id", Value: id}}
-	err := u.usercollection.FindOne(u.ctx, query).Decode(&user)
-	return user, err
+	filter := bson.M{"email": email}
+	if err := u.usercollection.FindOne(u.ctx, filter).Decode(&user); err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+
+func (u *UserServiceImplement) GetAddress(email string) (string, error) {
+	var user *models.User
+	if err := u.usercollection.FindOne(u.ctx, bson.M{"email": email}).Decode(&user); err != nil {
+		return "", err
+	}
+	return user.Address, nil
+}
+
+func (u *UserServiceImplement) IsExistMultiWallet(email string) (*models.MultiSigWallet, error) {
+	var multiwallet *models.MultiSigWallet
+	err := u.multiwalletcollection.FindOne(u.ctx, bson.M{"email": email}).Decode(&multiwallet)
+	if err != nil {
+		return nil, err
+	}
+	return multiwallet, nil
 }

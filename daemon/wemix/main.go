@@ -22,9 +22,8 @@ var (
 	err error
 )
 
-var ()
+func main() {
 
-func init() {
 	var configFlag = flag.String("config", "./config/config.toml", "toml file to use for configuration")
 	flag.Parse()
 	cf = conf.NewConfig(*configFlag)
@@ -36,9 +35,6 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-}
-
-func main() {
 
 	client, err := ethclient.Dial(cf.Wemix.Url)
 
@@ -88,18 +84,20 @@ func main() {
 			if err != nil {
 				log.Fatal(err)
 			}
-			log.Printf("Wemix New BlockNumber : %d ", b.BlockNumber)
+			//	log.Printf("Wemix New BlockNumber : %d ", b.BlockNumber)
 			/* 트랜잭션 추출 */
 			err = utils.GetTransactionsFromBlock(block.Transactions(), &b, block)
 			if err != nil {
 				log.Fatal(err)
 			}
-
 			/* 트랜잭션이 존재할 경우만 DB에 저장 */
 			if len(b.Transactions) > 0 {
-				if err := md.SaveBlock(&b); err != nil {
-					log.Fatal(err)
+				for _, tr := range b.Transactions {
+					if err := md.SaveBlock(tr); err != nil {
+						log.Fatal(err)
+					}
 				}
+
 			}
 		}
 	}

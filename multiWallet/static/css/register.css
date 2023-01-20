@@ -1,0 +1,45 @@
+html, body {
+    height: 100%;
+    font-family: 'Quicksand', sans-serif;
+    overflow: hidden;
+  }
+  .top {
+    height: 10%;
+  }
+  
+  .center {
+    width: 100%;
+    height: 20%;
+    display: flex;
+    align-items: center;
+  }
+  
+  h1 {
+    margin: 0 auto;
+  }
+
+  .modal-h3 {
+    align-items: center;
+    margin-bottom: 50px;
+    margin-top: 30px;
+  }
+  
+  .walletbutton {
+    align-items: center;
+    display: flex;
+  }
+  #CreateWallet {
+    margin: 0 auto;
+  }
+
+  #walletForm {
+    margin-top: 80px;
+    margin-left: 400px;
+    margin-right: 400px;
+  }
+  .letter {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 25px;
+  }

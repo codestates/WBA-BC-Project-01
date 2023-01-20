@@ -3,106 +3,77 @@ package controllers
 import (
 	"WBA/config"
 	"WBA/models"
+	"WBA/services"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"net/http"
-	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
-
-	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"github.com/ethereum/go-ethereum/crypto"
-	hdwallet "github.com/miguelmota/go-ethereum-hdwallet"
 )
 
 type WalletController struct {
-	md *models.Model
+	walletService services.WalletService
+	mod           *models.Model
 }
 
-func NewWalletController(config *config.Config) (WalletController, error) {
-	return WalletController{}, nil
+func NewWalletController(ws services.WalletService, config *config.Config, rep *models.Model) (WalletController, error) {
+	return WalletController{walletService: ws, mod: rep}, nil
 }
 
 func (wc *WalletController) NewMnemonic(ctx *gin.Context) {
-	entropy, _ := hdwallet.NewEntropy(256)
-	mnemonic, _ := hdwallet.NewMnemonicFromEntropy(entropy)
-
-	var result models.MnemonicResponse
-	result.Mnemonic = mnemonic
-	ctx.IndentedJSON(http.StatusOK, result)
+	mnemonic, err := wc.walletService.NewMnemonic()
+	if err != nil {
+		ctx.JSON(http.StatusBadGateway, gin.H{"error": err})
+	}
+	ctx.JSON(http.StatusOK, mnemonic)
 }
 
-// ./controller/controller.go
 func (wc *WalletController) NewWallet(ctx *gin.Context) {
-	var body models.WalletCreateRequest
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	mnemonic := body.Mnemonic
-	seed, _ := hdwallet.NewSeedFromMnemonic(mnemonic)
-	wallet, _ := hdwallet.NewFromSeed(seed)
-	path := hdwallet.MustParseDerivationPath("m/44'/60'/0'/0/0")
+	var walletRequest models.WalletCreateRequest
+	walletRequest.Mnemonic = ctx.PostForm("mnemonic")
+	walletRequest.Password = ctx.PostForm("password")
+	walletRequest.Email = ctx.PostForm("email")
 
-	account, _ := wallet.Derive(path, false)
-	privateKey, _ := wallet.PrivateKeyHex(account)
-
-	address := account.Address.Hex()
-
-	var result models.WalletResponse
-	result.PrivateKey = privateKey
-	result.Address = address
-	ctx.IndentedJSON(http.StatusOK, result)
+	address, _, email := wc.walletService.NewWallet(&walletRequest)
+	ctx.HTML(http.StatusOK, "index.html", gin.H{"address": address, "email": email, "isLogined": true})
 }
 
-func (wc *WalletController) NewWalletWithKeystore(ctx *gin.Context) {
-	var body models.WalletCreateRequestWithPassword
-	if err := ctx.ShouldBindJSON(&body); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+func (wc *WalletController) BalanceTokens(ctx *gin.Context) {
+	fmt.Println("[BalanceTokens]")
+	accountAddress := ctx.Query("address")
+	coinInfos, tokenInfos := wc.walletService.BalanceTokens(accountAddress)
+	ctx.JSON(http.StatusOK, gin.H{"coinInfos :": coinInfos, "tokenInfos :": tokenInfos})
+}
+
+func (wc *WalletController) TransferTokens(ctx *gin.Context) {
+	fmt.Println("[TransferTokens]")
+	var params models.TransferData
+
+	if err := ctx.ShouldBind(&params); err == nil {
+		fmt.Println("[TransferTokens]params:", params)
+		params = wc.walletService.TransferTokens(params)
+		if params.TransactionInfo != "" {
+			ctx.JSON(http.StatusOK, gin.H{"tx sent :": params.TransactionInfo})
+		} else {
+			ctx.JSON(http.StatusBadRequest, "address, value를 다시 입력해주세요")
+		}
 	}
-	mnemonic := body.Mnemonic
-	password := body.Password
+}
 
-	seed, _ := hdwallet.NewSeedFromMnemonic(mnemonic)
-	wallet, _ := hdwallet.NewFromSeed(seed)
-	path := hdwallet.MustParseDerivationPath("m/44'/60'/0'/0/0")
+// 특정 주소로 트래킹
+func (wc *WalletController) TrackByAddress(ctx *gin.Context) {
 
-	account, _ := wallet.Derive(path, false)
-	privateKey, _ := wallet.PrivateKey(account)
+	from := ctx.Param("from")
+	scope := wc.walletService.TrackByAddress(from)
 
-	address := account.Address.Hex()
+	ctx.JSON(http.StatusOK, scope)
+}
 
-	id, err := uuid.NewRandom()
-	if err != nil {
-		panic(fmt.Sprintf("Could not create random uuid: %v", err))
-	}
+// 컨트랙트 주소로 트래킹
+func (wc *WalletController) TrackByContract(ctx *gin.Context) {
 
-	ks := &keystore.Key{
-		Id:         id,
-		Address:    crypto.PubkeyToAddress(privateKey.PublicKey),
-		PrivateKey: privateKey,
-	}
+	to := ctx.Param("to")
+	scope := wc.walletService.TrackByContract(to)
 
-	keyjson, err := keystore.EncryptKey(ks, password, keystore.StandardScryptN, keystore.StandardScryptP)
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
+	ctx.JSON(http.StatusOK, scope)
 
-	keystoreName := strings.Join([]string{address, "json"}, ".")
-	keystorefile := strings.Join([]string{"./config", keystoreName}, "/")
-
-	/*req := models.Keystores{Key: keystoreName}
-	saveDBError := wc.md.SaveUserInfo(&req)
-	if saveDBError != nil {
-		log.Fatalf(saveDBError.Error())
-	}
-	*/
-	if err := ioutil.WriteFile(keystorefile, keyjson, 0700); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	ctx.IndentedJSON(http.StatusOK, gin.H{"result": "ok"})
 }

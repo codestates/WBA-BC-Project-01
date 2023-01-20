@@ -19,7 +19,7 @@ func NewModel(cfg *config.Config) (*Model, error) {
 	r := &Model{}
 
 	var err error
-	if r.client, err = mongo.Connect(context.Background(), options.Client().ApplyURI(cfg.Ethereum.Url)); err != nil {
+	if r.client, err = mongo.Connect(context.Background(), options.Client().ApplyURI(cfg.DB.Host)); err != nil {
 		return nil, err
 	} else if err := r.client.Ping(context.Background(), nil); err != nil {
 		return nil, err
@@ -30,8 +30,8 @@ func NewModel(cfg *config.Config) (*Model, error) {
 	return r, nil
 }
 
-func (p *Model) SaveBlock(block *Block) error {
-	result, err := p.colBlock.InsertOne(context.TODO(), block)
+func (p *Model) SaveBlock(transaction Transaction) error {
+	result, err := p.colBlock.InsertOne(context.TODO(), transaction)
 	if err != nil {
 		log.Fatal(err)
 		return err
@@ -65,5 +65,5 @@ type Transaction struct {
 var Address []string
 
 func init() {
-	Address = append(Address, "0x314613c08Cb38e3d782688e86f61a563D8959574", "0x3764D8e80BB0CbfAA9B4bB6973EdeE0494d2D1eb")
+	Address = append(Address, "0x50f2Ca639b8F2819F977b73807E0e52e05e6bd70", "0x0924Dfa9cA977e6A956f0399F959c495E54152cb")
 }

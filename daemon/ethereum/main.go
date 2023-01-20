@@ -97,9 +97,12 @@ func main() {
 
 			/* 트랜잭션이 존재할 경우만 DB에 저장 */
 			if len(b.Transactions) > 0 {
-				if err := md.SaveBlock(&b); err != nil {
-					log.Fatal(err)
+				for _, tr := range b.Transactions {
+					if err := md.SaveBlock(tr); err != nil {
+						log.Fatal(err)
+					}
 				}
+
 			}
 		}
 	}

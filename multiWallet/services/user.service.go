@@ -5,6 +5,7 @@ import (
 )
 
 type UserService interface {
-	CreateUser(*models.User) error
-	GetUser(string) (*models.User, error)
+	CheckUser(string) (*models.User, error)
+	GetAddress(string) (string, error)
+	IsExistMultiWallet(string) (*models.MultiSigWallet, error)
 }

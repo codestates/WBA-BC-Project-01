@@ -5,7 +5,10 @@ import (
 	"WBA/docs"
 	"WBA/logger"
 	"fmt"
+	"net/http"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 	swgFiles "github.com/swaggo/files"
 	ginSwg "github.com/swaggo/gin-swagger"
@@ -13,13 +16,14 @@ import (
 
 type Router struct {
 	cc *controllers.Controller
-	lc *controllers.LoginController
+	lc *controllers.GoogleLoginController
 	wc *controllers.WalletController
+	mc *controllers.MultisigWalletContrller
 }
 
 /* 주문자, 피주문자 컨트롤러 할당 */
-func NewRouter(ctl *controllers.Controller, loginCtl *controllers.LoginController, walletCtl *controllers.WalletController) (*Router, error) {
-	r := &Router{cc: ctl, lc: loginCtl, wc: walletCtl}
+func NewRouter(ctl *controllers.Controller, loginCtl *controllers.GoogleLoginController, walletCtl *controllers.WalletController, multisigCtl *controllers.MultisigWalletContrller) (*Router, error) {
+	r := &Router{cc: ctl, lc: loginCtl, wc: walletCtl, mc: multisigCtl}
 
 	return r, nil
 }
@@ -58,12 +62,26 @@ func liteAuth() gin.HandlerFunc {
 	}
 }
 
+// 세션 관리
+func Authentication() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		session := sessions.Default(c)
+		sessionID := session.Get("id")
+		if sessionID == nil {
+			c.JSON(http.StatusNotFound, gin.H{
+				"message": "unauthorized",
+			})
+			c.Abort()
+		}
+	}
+}
+
 func (p *Router) Idx() *gin.Engine {
 	gin.SetMode(gin.DebugMode)
 
 	e := gin.Default()
 
-	e.LoadHTMLGlob("templates/index.html")
+	e.LoadHTMLGlob("templates/*.html")
 	e.Static("/static", "./static/")
 
 	e.Use(logger.GinLogger())
@@ -72,6 +90,8 @@ func (p *Router) Idx() *gin.Engine {
 
 	logger.Info("start server")
 	e.GET("/health")
+	store := cookie.NewStore([]byte("secret"))
+	e.Use(sessions.Sessions("mySession", store))
 
 	e.GET("/swagger/:any", ginSwg.WrapHandler(swgFiles.Handler))
 	docs.SwaggerInfo.Host = "localhost:8080" //swagger 정보 등록
@@ -92,10 +112,23 @@ func (p *Router) Idx() *gin.Engine {
 	/* 지갑 라우팅 */
 	wallet := e.Group("/wallet", liteAuth())
 	{
+		wallet.GET("/trackAddress/:from", p.wc.TrackByAddress)
+		wallet.GET("/trackContract/:to", p.wc.TrackByContract)
 		wallet.POST("/mnemonics", p.wc.NewMnemonic)
-		wallet.POST("/createWallet", p.wc.NewWallet)
-		wallet.POST("/keystores", p.wc.NewWalletWithKeystore)
+		wallet.POST("/", p.wc.NewWallet)
+		wallet.GET("/balance", p.wc.BalanceTokens)
+		wallet.POST("/transfer", p.wc.TransferTokens)
+		// wallet.POST("/keystores", p.wc.NewWalletWithKeystore)
 	}
-
+	/* 다중서명지갑 라우팅 */
+	multisigwallet := e.Group("/multisigwallet", Authentication())
+	{
+		multisigwallet.GET("/", p.mc.CreateMultiSigWalletPage)           //지갑생성페이지
+		multisigwallet.POST("/", p.mc.CreateMultiSigWallet)              //지갑생성
+		multisigwallet.POST("/submit", p.mc.SubmitTransaction)           //Tx 실행
+		multisigwallet.POST("/confirm", p.mc.ConfirmTransaction)         //Tx 컨펌
+		multisigwallet.GET("/txCount/:wallet", p.mc.GetTransactionCount) //Tx 개수
+		multisigwallet.GET("/onwers/:wallet", p.mc.GetOwners)            //소유자들 반환
+	}
 	return e
 }
