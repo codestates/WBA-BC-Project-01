@@ -24,13 +24,23 @@
  거래소가 아닌 개인지갑을 이용 예정인 신규 유저는 지갑생성부터 어려움을 느낀다. 그래서 구글 로그인을 하면 자동으로 지갑을 생성하고, 유저가 니모닉 단어와 지갑 키를 관리하지 않아도 되는 지갑이 있으면 좋겠다고 생각했습니다. 
 
  저희 프로젝트는 기존 소셜과 동일하게 메일주소와 패스워드만 있으면 누구나 사용 가능한 유저 친화적인 지갑을 제공합니다.
- 
-<pre><code>
-💡 **구글 로그인으로 유저 친화적인 지갑 서비스 구현**
+
+## TEAM Mallet
+<div align="center">
+
+|                                                                                                                       이우석 : BE                                                                                                                       |                                                                                                                       변재진 : BE                                                                                                                       |                                                                                                                       심승훈 : BE                                                                                                                                                                                               |
+| :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: 
+|                                                                                     <img width="160px" src="https://avatars.githubusercontent.com/u/119834304?v=4">                                                                                      |                                                            <img width="160px" src="https://avatars.githubusercontent.com/u/103496262?v=4" />                                                            |                                                                                     <img width="160px" src="https://avatars.githubusercontent.com/u/65848709?v=4">                                                                                      |
+[@wslee220420](https://github.com/wslee220420)                                                                                                          |                                                                                                    [@wlswo](https://github.com/wlswo)                                                                                                     |                                                                                                        [@simpsonhoon](https://github.com/simpsonhoon)
+
+</div> 
+
+```
+💡 구글 로그인으로 유저 친화적인 지갑 서비스 구현
 - 사용자는 니모닉 단어를 보관하지 않아도 됩니다.
 - 구글 로그인과 비밀번호를 이용하여 PrivateKey를 보관합니다.
 - 지갑주소의 트랜잭션 내용을 쉽게 트래킹 할 수 있습니다.
-</pre></code>
+```
 
 ### 핵심 기능
 
@@ -54,11 +64,7 @@
 ## 사용법
 - 구글 로그인, 지갑 생성
     - 지갑 생성 버튼 클릭시 지갑 생성
-        - [http://localhost:8080/auth/google/login](http://localhost:8080/auth/google/login)
-    - 패스워드 입력 후 지갑 생성
-        - 패스워드는 개인키를 복호화할 때 사용
-    - 지갑 생성 후, 메일주소와 지갑주소 리턴
-        - [http://localhost:8080/wallet/](http://localhost:8080/wallet/)
+    - <img src="https://user-images.githubusercontent.com/103496262/215489595-bb2aa824-b05f-463f-b17a-a3a9d720eff5.gif">
 - 지갑 자산 가져오기
     - 지갑 주소로 자산 호출
         - [http://localhost:8080/wallet/balance?address=0x314613c](http://localhost:8080/wallet/balance?address=0x314613c08Cb38e3d782688e86f61a563D8959574)
@@ -116,18 +122,15 @@
             ```
             
 - 코인, 토큰 전송
-    - 네트워크 정보, 주소, 수량, 메일주소, 패스워드를 입력받아 실행
-        - [http://localhost:8080/wallet/transfer](http://localhost:8080/wallet/transfer)
-    - 결과 값
-        
-        ```json
-        {
-            "tx :": "0xd7de8be613af5fbccea08025a5258f716dbf4ee178e7342d37e05533bf68c6e8"
-        }
-        ```
+    - <img src="https://user-images.githubusercontent.com/103496262/215489633-7aaac118-93d0-40d9-9abf-56398895d65d.gif">
         
 - 트랜잭션 확인
-    - 위믹스, 클레이튼, 이더리움 체인에서 자신의 코인, 토큰의 거래내역 및 트랜잭션 리스트를 가져온다.
+    - 위믹스, 클레이튼, 이더리움 체인에서 자신의 코인, 토큰의 거래내역 및 트랜잭션 리스트를 가져옵니다.
+    - <img src="https://user-images.githubusercontent.com/103496262/215490878-9dac65ce-c0f7-4151-949a-dc4f841c6d96.gif">
+
+- 다중서명 지갑 생성과 계약 제출
+    - <img src="https://user-images.githubusercontent.com/103496262/215489677-18be0ba6-0a8b-43be-a979-f9a3333b9860.gif">
+    - <img src="https://user-images.githubusercontent.com/103496262/215490858-a195fb13-6caf-4b62-a7ee-7311d05fd86a.gif">
 
 ### 개발 환경
 - 언어
@@ -140,127 +143,6 @@
     - Git
     - Discord
 ### 사용 기술
-
-### 디렉토리 구조
-```
-📦daemon
- ┣ 📂ethereum
- ┃ ┣ 📂config
- ┃ ┃ ┣ 📜config.go
- ┃ ┃ ┗ 📜config.toml
- ┃ ┣ 📂logger
- ┃ ┃ ┗ 📜logger.go
- ┃ ┣ 📂logs
- ┃ ┃ ┗ 📜go-loger_2023-01-15.log
- ┃ ┣ 📂models
- ┃ ┃ ┗ 📜model.go
- ┃ ┣ 📂utils
- ┃ ┃ ┗ 📜util.go
- ┃ ┣ 📜.gitIgnore
- ┃ ┣ 📜README.md
- ┃ ┣ 📜go.mod
- ┃ ┣ 📜go.sum
- ┃ ┗ 📜main.go
- ┣ 📂klaytn
- ┃ ┣ 📂config
- ┃ ┃ ┣ 📜config.go
- ┃ ┃ ┗ 📜config.toml
- ┃ ┣ 📂logger
- ┃ ┃ ┗ 📜logger.go
- ┃ ┣ 📂logs
- ┃ ┃ ┗ 📜go-loger_2023-01-16.log
- ┃ ┣ 📂models
- ┃ ┃ ┗ 📜model.go
- ┃ ┣ 📂utils
- ┃ ┃ ┗ 📜util.go
- ┃ ┣ 📜.gitIgnore
- ┃ ┣ 📜README.md
- ┃ ┣ 📜go.mod
- ┃ ┣ 📜go.sum
- ┃ ┗ 📜main.go
- ┣ 📂logs
- ┃ ┗ 📜go-loger_2023-01-15.log
- ┗ 📂wemix
- ┃ ┣ 📂config
- ┃ ┃ ┣ 📜config.go
- ┃ ┃ ┗ 📜config.toml
- ┃ ┣ 📂logger
- ┃ ┃ ┗ 📜logger.go
- ┃ ┣ 📂logs
- ┃ ┃ ┗ 📜go-loger_2023-01-16.log
- ┃ ┣ 📂models
- ┃ ┃ ┗ 📜model.go
- ┃ ┣ 📂utils
- ┃ ┃ ┗ 📜util.go
- ┃ ┣ 📜.gitIgnore
- ┃ ┣ 📜README.md
- ┃ ┣ 📜go.mod
- ┃ ┣ 📜go.sum
- ┃ ┣ 📜main.go
- ┃ ┗ 📜services
-
-📦multiWallet
- ┣ 📂build
- ┃ ┣ 📜IERC20.abi
- ┃ ┣ 📜IERC20.bin
- ┃ ┣ 📜MultiSigWallet.abi
- ┃ ┣ 📜MultiSigWallet.bin
- ┃ ┣ 📜WALToken.abi
- ┃ ┗ 📜WALToken.bin
- ┣ 📂config
- ┃ ┣ 📜config.go
- ┃ ┗ 📜config.toml
- ┣ 📂contracts
- ┃ ┣ 📂build
- ┃ ┃ ┣ 📜MultiSigWallet.abi
- ┃ ┃ ┗ 📜MultiSigWallet.bin
- ┃ ┣ 📂multisigwallet
- ┃ ┃ ┣ 📜MultisigWallet.go
- ┃ ┃ ┗ 📜MultisigWallet.sol
- ┃ ┣ 📜WALToken.go
- ┃ ┗ 📜WALToken.sol
- ┣ 📂controllers
- ┃ ┣ 📜controller.go
- ┃ ┣ 📜googlelogin.controller.go
- ┃ ┣ 📜multisigwallet.controller.go
- ┃ ┣ 📜user.controller.go
- ┃ ┗ 📜wallet.controller.go
- ┣ 📂docs
- ┃ ┣ 📜docs.go
- ┃ ┗ 📜swagger.yaml
- ┣ 📂logger
- ┃ ┗ 📜logger.go
- ┣ 📂logs
- ┣ 📂models
- ┃ ┣ 📜model.go
- ┃ ┣ 📜multisigwallet.go
- ┃ ┣ 📜user.go
- ┃ ┗ 📜wallet.go
- ┣ 📂route
- ┃ ┗ 📜route.go
- ┣ 📂services
- ┃ ┣ 📜multisigWallet.service.go
- ┃ ┣ 📜multisigWallet.serviece.impl.go
- ┃ ┣ 📜user.service.go
- ┃ ┣ 📜user.service.impl.go
- ┃ ┣ 📜wallet.service.go
- ┃ ┗ 📜wallet.service.impl.go
- ┣ 📂static
- ┃ ┣ 📂css
- ┃ ┃ ┣ 📜register.css
- ┃ ┃ ┗ 📜style.css
- ┃ ┗ 📂javascript
- ┃ ┃ ┗ 📜register.js
- ┣ 📂templates
- ┃ ┣ 📜index.html
- ┃ ┣ 📜multisigwallet.html
- ┃ ┗ 📜register.html
- ┣ 📂utils
- ┃ ┗ 📜wallet.func.go
- ┣ 📜go.mod
- ┣ 📜go.sum
- ┗ 📜main.go
-```
 
 ### ERD
 - 데이터베이스 설계
@@ -337,3 +219,5 @@
 /multisigwallet/txCount/{wallet}    [GET]         // @Description 계약 개수 가져오기
 /multisigwallet/owners/{wallet}     [GET]         // @Description 지갑 소유자 목록 반환
 ```
+
+
