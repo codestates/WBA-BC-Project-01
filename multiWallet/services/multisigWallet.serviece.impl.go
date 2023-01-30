@@ -162,7 +162,9 @@ func (m *MultiSigWalletServiceImplement) SubmitTransaction(email string, passwor
 	fmt.Println(tx.Hash().Hex()) // 0xdae8ba5444eefdc99f4d45cd0c4f24056cba6a02cefbf78066ef9f4188ff7dc0
 
 	_ = instance
-
+	if err != nil {
+		log.Fatal(err)
+	}
 	return tx.Hash().Hex()
 }
 
@@ -243,7 +245,7 @@ func (m *MultiSigWalletServiceImplement) GetTransactionCount(wallet string) stri
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(count)
+	fmt.Println(count.Uint64())
 
 	_ = instance
 
@@ -271,3 +273,30 @@ func (m *MultiSigWalletServiceImplement) GetOwners(wallet string) []common.Addre
 	return owners
 }
 
+// 모든 트랜잭션의 정보 가져오기
+func (m *MultiSigWalletServiceImplement) GetAllTransactions(wallet string) []models.Tx {
+	client := m.mod.WemixClient
+
+	instance, err := multisig.NewContracts(common.HexToAddress(wallet), client)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	//트랜잭션의 총개수 가져오기
+	var txs []models.Tx
+	count, _ := instance.GetTransactionCount(&bind.CallOpts{})
+	for index := 0; index < int(count.Uint64()); index++ {
+		tx, _ := instance.GetTransaction(&bind.CallOpts{}, big.NewInt(int64(index)))
+		txs = append(txs, tx)
+
+	}
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(count)
+
+	_ = instance
+
+	return txs //count.String()
+}
