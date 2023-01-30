@@ -48,7 +48,7 @@ func (m *MultisigWalletContrller) CreateMultiSigWallet(ctx *gin.Context) {
 		return
 	}
 
-	wallet, walletname, err := m.ms.CreateMultiSigWallet(email, password, owners, uint(numConfirmRequired), walletname)
+	walletname, wallet, err := m.ms.CreateMultiSigWallet(email, password, owners, uint(numConfirmRequired), walletname)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
 		return
@@ -89,4 +89,10 @@ func (m *MultisigWalletContrller) GetOwners(ctx *gin.Context) {
 	walletaddress := ctx.Param("wallet")
 	onwers := m.ms.GetOwners(walletaddress)
 	ctx.JSON(http.StatusOK, gin.H{"소유자 명단": onwers})
+}
+
+func (m *MultisigWalletContrller) GetAllTxs(ctx *gin.Context) {
+	walletaddress := ctx.Param("wallet")
+	txs := m.ms.GetAllTransactions(walletaddress)
+	ctx.JSON(http.StatusOK, gin.H{"컨펌이 필요한 트랜잭션들": txs})
 }

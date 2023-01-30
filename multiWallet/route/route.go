@@ -129,6 +129,7 @@ func (p *Router) Idx() *gin.Engine {
 		multisigwallet.POST("/confirm", p.mc.ConfirmTransaction)         //Tx 컨펌
 		multisigwallet.GET("/txCount/:wallet", p.mc.GetTransactionCount) //Tx 개수
 		multisigwallet.GET("/onwers/:wallet", p.mc.GetOwners)            //소유자들 반환
+		multisigwallet.GET("/needConfirmTx/:wallet", p.mc.GetAllTxs)
 	}
 	return e
 }
