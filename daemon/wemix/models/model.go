@@ -65,5 +65,5 @@ type Transaction struct {
 var Address []string
 
 func init() {
-	Address = append(Address, "0x50f2Ca639b8F2819F977b73807E0e52e05e6bd70", "0x91b910b53386D5b0530F88213c2aFae55d20B986")
+	Address = append(Address, "0x50f2Ca639b8F2819F977b73807E0e52e05e6bd70", "0x91b910b53386D5b0530F88213c2aFae55d20B986", "0x0924Dfa9cA977e6A956f0399F959c495E54152cb")
 }
